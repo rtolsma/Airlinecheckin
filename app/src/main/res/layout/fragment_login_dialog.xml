@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tolsma.awtolsma.airlinecheckin.ui.LoginDialogFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <DatePicker
+        android:id="@+id/login_dialog_date_picker"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+    />
+    <TimePicker
+        android:id="@+id/login_dialog_time_picker"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:id="@+id/login_dialog_first_name"
+        android:editable="true"
+        android:text="First Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/login_dialog_last_name"
+        android:editable="true"
+        android:text="Last Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>
