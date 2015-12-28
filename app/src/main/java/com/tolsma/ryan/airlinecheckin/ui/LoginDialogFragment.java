@@ -43,6 +43,22 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
     private String mLoginType=null;
     private Login mLogin;
 
+    DialogInterface.OnClickListener dialogClickListener= new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch(which) {
+                case AlertDialog.BUTTON_POSITIVE: dialog.dismiss();
+                    break;
+                case AlertDialog.BUTTON_NEGATIVE: dialog.cancel();
+
+                    break;
+                default: //shouldn't happen
+
+            }
+
+        }
+    };
+
    /* @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -70,17 +86,10 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
                 //dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.fragment_login_dialog, null));
                 dialogBuilder.setView(mDialogLayout);
                 //.setIcon(id)
-                dialogBuilder.setPositiveButton(R.string.dialog_submit, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                dialogBuilder.setPositiveButton(R.string.dialog_submit, dialogClickListener ).
+                        setNegativeButton(R.string.dialog_cancel,dialogClickListener); //TODO);
 
-                    }
-                }).setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                }); //TODO);
 
         return dialogBuilder.create();
     }
