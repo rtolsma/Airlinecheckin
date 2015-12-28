@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TimePicker;
 
 import com.tolsma.ryan.airlinecheckin.R;
@@ -21,20 +23,27 @@ import com.tolsma.ryan.airlinecheckin.model.Login;
 
 import java.sql.Time;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
 
  */
 public class LoginDialogFragment extends DialogFragment implements ExtendedFragment {
-
-    private LinearLayout mDialogLayout;
-    private DatePicker mDatePicker;
-    private TimePicker mTimePicker;
-    private EditText mFirstName, mLastName;
+    ScrollView mDialogLayout;
+    @Bind(R.id.login_dialog_date_picker)
+    DatePicker mDatePicker;
+    @Bind(R.id.login_dialog_time_picker)
+    TimePicker mTimePicker;
+    @Bind(R.id.login_dialog_first_name_edit_text)
+    EditText mFirstName;
+    @Bind(R.id.login_dialog_last_name_edit_text)
+    EditText mLastName;
 
     private String mLoginType=null;
     private Login mLogin;
 
-    @Override
+   /* @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mDialogLayout=(LinearLayout) inflater.inflate(R.layout.fragment_login_dialog, container, false);
@@ -46,18 +55,34 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
 
 
 
-        return mDialogLayout;
+        return inflater.inflate;
     }
+    */
 
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
+        mDialogLayout=(ScrollView) getActivity().getLayoutInflater().inflate(R.layout.fragment_login_dialog, null);
+        ButterKnife.bind(this, mDialogLayout);
 
-        AlertDialog.Builder dialogBuilder=new AlertDialog.Builder(getActivity())
+        mDatePicker.setCalendarViewShown(false);
+        AlertDialog.Builder dialogBuilder=new AlertDialog.Builder(getActivity());
                 dialogBuilder.setTitle(mLoginType);
+                //dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.fragment_login_dialog, null));
+                dialogBuilder.setView(mDialogLayout);
                 //.setIcon(id)
-                dialogBuilder.setPositiveButton(R.string.dialog_submit,//TODO);
+                dialogBuilder.setPositiveButton(R.string.dialog_submit, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                }).setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                }); //TODO);
+
+        return dialogBuilder.create();
     }
 
     @Override

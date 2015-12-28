@@ -1,30 +1,76 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.tolsma.awtolsma.airlinecheckin.ui.LoginDialogFragment">
+<ScrollView android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            tools:context="com.tolsma.awtolsma.airlinecheckin.ui.LoginDialogFragment"
+            xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <DatePicker
-        android:id="@+id/login_dialog_date_picker"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-    />
-    <TimePicker
-        android:id="@+id/login_dialog_time_picker"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
-    <EditText
-        android:id="@+id/login_dialog_first_name"
-        android:editable="true"
-        android:text="First Name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <EditText
-        android:id="@+id/login_dialog_last_name"
-        android:editable="true"
-        android:text="Last Name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+                  android:layout_height="match_parent"
+                  android:layout_width="match_parent"
+                  android:orientation="vertical"
+                  >
+
+        <!-- TODO: Update blank fragment layout -->
+        <DatePicker
+            android:id="@+id/login_dialog_date_picker"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:datePickerMode="spinner"
+            />
+        <TimePicker
+            android:id="@+id/login_dialog_time_picker"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"/>
+     <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+   <!--     <TextView android:id="@+id/login_dialog_first_name_text_view"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/dialog_first"
+            />  -->
+         <android.support.design.widget.TextInputLayout
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_centerInParent="true"
+             android:id="@+id/login_dialog_first_name_input"
+         >
+         <EditText
+             android:id="@+id/login_dialog_first_name_edit_text"
+             android:hint="@string/dialog_first"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+            />
+         </android.support.design.widget.TextInputLayout>
+
+             <!--android:layout_alignRight="@id/login_dialog_first_name_text_view"/>
+         <TextView android:id="@+id/login_dialog_last_name_text_view"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="@string/dialog_last"
+             /> -->
+
+         <android.support.design.widget.TextInputLayout
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_centerInParent="true"
+             android:layout_below="@id/login_dialog_first_name_input"
+             android:id="@+id/login_dialog_last_name_input"
+             >
+             <EditText
+                 android:id="@+id/login_dialog_last_name_edit_text"
+                 android:hint="@string/dialog_last"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 />
+
+         </android.support.design.widget.TextInputLayout>
 
 
-</LinearLayout>
+     </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+
+</ScrollView>
