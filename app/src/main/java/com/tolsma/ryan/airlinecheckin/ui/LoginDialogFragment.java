@@ -1,27 +1,20 @@
 package com.tolsma.ryan.airlinecheckin.ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TimePicker;
 
 import com.tolsma.ryan.airlinecheckin.R;
-import com.tolsma.ryan.airlinecheckin.model.Login;
+import com.tolsma.ryan.airlinecheckin.model.SouthwestLogin;
+import com.tolsma.ryan.airlinecheckin.utils.RealmUtils;
 
-import java.sql.Time;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,6 +23,7 @@ import butterknife.ButterKnife;
 
  */
 public class LoginDialogFragment extends DialogFragment implements ExtendedFragment {
+    final int MIN_PER_HOUR = 60, SEC_PER_MIN = 60;
     ScrollView mDialogLayout;
     @Bind(R.id.login_dialog_date_picker)
     DatePicker mDatePicker;
@@ -39,15 +33,22 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
     EditText mFirstName;
     @Bind(R.id.login_dialog_last_name_edit_text)
     EditText mLastName;
-
-    private String mLoginType=null;
-    private Login mLogin;
-
+    @Bind(R.id.login_dialog_confirmation_code_edit_text)
+    EditText mConfirmationCode;
     DialogInterface.OnClickListener dialogClickListener= new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch(which) {
-                case AlertDialog.BUTTON_POSITIVE: dialog.dismiss();
+                case AlertDialog.BUTTON_POSITIVE:
+                    Date flightDate = getDate(mDatePicker, mTimePicker);
+
+                    SouthwestLogin login = new SouthwestLogin();
+                    login.setFirstName(mFirstName.getText().toString());
+                    login.setLastName(mLastName.getText().toString());
+                    login.setConfirmationCode(mConfirmationCode.getText().toString());
+                    login.setFlightDate(flightDate);
+                    RealmUtils.saveToRealm(getActivity(), login);
+                    dialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_NEGATIVE: dialog.cancel();
 
@@ -58,6 +59,7 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
 
         }
     };
+
 
    /* @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,6 +76,7 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
         return inflater.inflate;
     }
     */
+   private String mLoginType = null;
 
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
@@ -98,6 +101,17 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
     public void setArguments(Bundle bundle) {
         mLoginType=(String) bundle.get("login");
 
+
+    }
+
+    public Date getDate(DatePicker dp, TimePicker tp) {
+        if (tp != null & dp != null) {
+
+            long time = dp.getMinDate();
+            time += tp.getHour() * MIN_PER_HOUR * SEC_PER_MIN + tp.getMinute() * SEC_PER_MIN;
+            return new Date(time);
+        }
+        return null;
 
     }
 
