@@ -6,5 +6,5 @@ package com.tolsma.ryan.airlinecheckin.utils;
 public class ConstantsConfig {
 
     public final static String LOGIN_INTENT_ID = "ID";
-
+    public final static String SOUTHWEST_AIRLINES = "Southwest Airlines";
 }

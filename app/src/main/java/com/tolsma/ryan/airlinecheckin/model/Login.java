@@ -6,40 +6,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import com.tolsma.ryan.airlinecheckin.model.realmobjects.LoginEvent;
 import com.tolsma.ryan.airlinecheckin.services.LoginAlarmService;
 import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
 
-import java.util.Date;
-
-import io.realm.RealmObject;
-import io.realm.annotations.Index;
-
 /**
- * Created by ryan on 12/22/15.
+ * Created by ryantolsma on 12/29/15.
  */
-public abstract class Login extends RealmObject {
-    @Index
-    public String mFirstName;
-    @Index
-    public String mLastName;
-    @Index
-    public String mAirline;
-    @Index
-    public Date mFlightDate;
-    private PendingIntent mAlarmIntent;
+public class Login {
 
 
-    public Login(String first, String last, Date date) {
-        this.mFirstName=first;
-        this.mLastName=last;
-        this.mFlightDate = date;
+    protected PendingIntent mAlarmIntent;
+    private LoginEvent loginEvent; //Non-Protected, since subclasses will have other forms of LoginEvent and Realm Objects can't be subclassed
+
+
+    public Login(LoginEvent loginEvent) {
+        this.loginEvent = loginEvent;
     }
 
+    public Login() {
+        this.loginEvent = null;
+    }
     /**
      * @param ctx Context to create AlarmManager
      * @return False if flight date is not set
      * <p>
-     * This will set an Alarm for this Login object at the
+     * This will set an Alarm for this LoginEvent object at the
      * given flight date. If an alarm has already been set,
      * then it will cancel that alarm, and update it with the correct
      * data
@@ -53,17 +45,17 @@ public abstract class Login extends RealmObject {
             mAlarmIntent = null;
         }
 
-        if (mFlightDate != null) {
+        if (loginEvent.getFlightDate() != null) {
             Intent i = new Intent(ctx, LoginAlarmService.class);
             i.putExtra(ConstantsConfig.LOGIN_INTENT_ID, id);
             mAlarmIntent = PendingIntent.getService(ctx, 0, i, 0);
 
             if (Build.VERSION.SDK_INT >= 23)
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, mFlightDate.getTime(), mAlarmIntent);
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, loginEvent.getFlightDate().getTime(), mAlarmIntent);
             else if (Build.VERSION.SDK_INT >= 19)
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, mFlightDate.getTime(), mAlarmIntent);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, loginEvent.getFlightDate().getTime(), mAlarmIntent);
             else
-                alarmManager.set(AlarmManager.RTC_WAKEUP, mFlightDate.getTime(), mAlarmIntent);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, loginEvent.getFlightDate().getTime(), mAlarmIntent);
 
             return true;
         }
@@ -77,41 +69,16 @@ public abstract class Login extends RealmObject {
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(mAlarmIntent);
         return true;
-
     }
 
-
-    public String getAirline() {
-        return mAirline;
+    public LoginEvent getLoginEvent() {
+        return loginEvent;
     }
 
-    public void setAirline(String mAirline) {
-        this.mAirline = mAirline;
-    }
+    public LoginEvent setLoginEvent(LoginEvent element) {
+        LoginEvent temp = this.getLoginEvent();
+        loginEvent = element;
+        return temp;
 
-
-
-    public String getFirstName() {
-        return mFirstName;
-    }
-
-    public void setFirstName(String mFirstName) {
-        this.mFirstName = mFirstName;
-    }
-
-    public String getLastName() {
-        return mLastName;
-    }
-
-    public void setLastName(String mLastName) {
-        this.mLastName = mLastName;
-    }
-
-    public Date getFlightDate() {
-        return mFlightDate;
-    }
-
-    public void setFlightDate(Date mFlightDate) {
-        this.mFlightDate = mFlightDate;
     }
 }

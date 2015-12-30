@@ -2,35 +2,37 @@ package com.tolsma.ryan.airlinecheckin.model;
 
 import android.content.Context;
 
-import java.util.Date;
-
-import io.realm.annotations.Ignore;
-import io.realm.annotations.PrimaryKey;
+import com.tolsma.ryan.airlinecheckin.model.realmobjects.LoginEvent;
+import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
 
 /**
  * Created by ryan on 12/22/15.
  */
 public class SouthwestLogin extends Login {
 
-    @Ignore
-    public final String mAirline="Southwest Airline";
-    @PrimaryKey
-    public String mConfirmationCode;
 
+    public static final String AIRLINE = "Southwest Airline";
 
-    public SouthwestLogin(String first, String last, String confirmationCode, Date date) {
-        super(first, last, date);
-        this.mConfirmationCode=confirmationCode;
+    private SouthwestLoginEvent southwestLoginEvent;
+
+    public SouthwestLogin(LoginEvent event) {
+        SouthwestLoginEvent sle = new SouthwestLoginEvent();
+        sle.setLastName(event.getLastName());
+        sle.setFirstName(event.getFirstName());
+        sle.setFlightDate(event.getFlightDate());
+        this.southwestLoginEvent = southwestLoginEvent;
+
     }
 
-    public SouthwestLogin() {
-        this(null, null, null, null);
+    public SouthwestLogin(SouthwestLoginEvent southwestLoginEvent) {
+        this.southwestLoginEvent = southwestLoginEvent;
     }
+
 
 
     public boolean setAlarm(Context ctx) {
-        if (mConfirmationCode != null) {
-            super.setAlarm(ctx, mConfirmationCode);
+        if (this.southwestLoginEvent.getConfirmationCode() != null) {
+            super.setAlarm(ctx, southwestLoginEvent.getConfirmationCode());
             return true;
         }
         return false;
@@ -39,12 +41,22 @@ public class SouthwestLogin extends Login {
     }
 
     public String getConfirmationCode() {
-        return mConfirmationCode;
+        return southwestLoginEvent.getConfirmationCode();
     }
 
     public void setConfirmationCode(String mConfirmationCode) {
-        this.mConfirmationCode = mConfirmationCode;
+        southwestLoginEvent.setConfirmationCode(mConfirmationCode);
     }
 
+    public SouthwestLoginEvent getSouthwestLoginEvent() {
+        return southwestLoginEvent;
 
+    }
+
+    public SouthwestLoginEvent setSouthwestLoginEvent(SouthwestLoginEvent event) {
+        SouthwestLoginEvent temp = this.getSouthwestLoginEvent();
+        this.southwestLoginEvent = event;
+        return temp;
+
+    }
 }

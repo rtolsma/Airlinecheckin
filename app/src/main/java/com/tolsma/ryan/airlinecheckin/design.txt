@@ -1,0 +1,21 @@
+
+
+    This is a small document that I'll use to record my thoughts on Design
+
+
+
+    **Model**
+
+   Send Login data in an HTTP request to the node.js server, at the correct time, which will submit the request to the
+   Airline website. After request is sent, get back flight data/seat info and text/email to client or use a notification.
+
+
+   **Controllers...Fragments**
+   Use the DialogFragment to create the Login data, which will be sent back to the ListFragment in a Logins object, that stores
+   data in Realm. On the Floating Action button click, call the method in the ListFragment to show the dialog, and then retrieve the
+   Login object from that instance. Use adapter, to sort Logins based off of Date.
+
+   A login List Item should show Airlines, date, time, and names. When clicked, the LoginDialogFragment should be shown, reflecting
+   the data on the Login object being represented, then save any adjustments made to this login.
+
+   Use a preference activity to give options for Notifications, texts, emails, and Donate to developer option.
