@@ -3,7 +3,11 @@ package com.tolsma.ryan.airlinecheckin.modules;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+
+import com.tolsma.ryan.airlinecheckin.MainActivity;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -22,11 +26,14 @@ import io.realm.Realm;
 public class AppModule {
 
     Context ctx;
+    MainActivity ma;
 
 
-    public AppModule(Context ctx) {
-        this.ctx = ctx;
+    public AppModule(MainActivity mainActivity) {
+        ma = mainActivity;
+        ctx = ma.getApplication();
     }
+
 
     @Provides
     @Singleton
@@ -52,6 +59,24 @@ public class AppModule {
         return (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    @Provides
+    @Singleton
+    public MainActivity provideMainActivity() {
+        return this.ma;
+    }
+
+    @Provides
+    @Singleton
+    public FragmentManager provideFragmentManager(Context ctx) {
+        return
+                ma.getSupportFragmentManager();
+    }
+
+    @Provides
+    @Singleton
+    public FragmentTransaction provideFragmentTransaction(FragmentManager fm) {
+        return fm.beginTransaction();
+    }
     @Retention(RetentionPolicy.RUNTIME)
     @Scope
     public @interface PerApp {

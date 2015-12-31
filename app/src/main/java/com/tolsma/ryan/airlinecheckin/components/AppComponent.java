@@ -3,6 +3,8 @@ package com.tolsma.ryan.airlinecheckin.components;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 
 import com.tolsma.ryan.airlinecheckin.MainActivity;
@@ -41,4 +43,11 @@ public interface AppComponent {
     SharedPreferences sharedPreference();
 
     LayoutInflater layoutInflater();
+
+    MainActivity mainActivity();
+
+    FragmentManager fragmentManager();
+
+    FragmentTransaction fragmentTransaction();
+
 }

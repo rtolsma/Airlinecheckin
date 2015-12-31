@@ -7,6 +7,8 @@ android {
     buildToolsVersion "23.0.1"
 
 
+
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -24,6 +26,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+}
+
+android {
+    packagingOptions {
+        exclude 'META_INF/services/javax.annotation.processing.Processor'
     }
 }
 

@@ -40,7 +40,7 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
     private SouthwestLoginEvent login;
     private OnSuccessfulCompletion onCompletion;
 
-
+    private boolean mChangeLogin;
     DialogInterface.OnClickListener dialogClickListener= new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -53,7 +53,7 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
                     login.setLastName(mLastName.getText().toString());
                     login.setConfirmationCode(mConfirmationCode.getText().toString());
                     login.setFlightDate(flightDate);
-                    onCompletion.onComplete(new SouthwestLogin(login));
+                    onCompletion.onComplete(new SouthwestLogin(login), mChangeLogin);
                     dialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_NEGATIVE: dialog.cancel();
@@ -81,6 +81,11 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
     }
     */
    private String mLoginType = null;
+
+    public LoginDialogFragment(boolean changeLogin) {
+        this.mChangeLogin = changeLogin;
+
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
@@ -131,7 +136,8 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
     }
 
     public interface OnSuccessfulCompletion {
-        void onComplete(Login login);
+        void onComplete(Login login, boolean changed);
     }
+
 
 }

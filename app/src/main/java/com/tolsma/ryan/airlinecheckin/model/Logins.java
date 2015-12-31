@@ -59,17 +59,25 @@ public class Logins {
         return false;
     }
 
-    public LoginEvent set(Login element, int index) {
+    public LoginEvent set(Login element, Login newElement) {
         realm.beginTransaction();
         RealmQuery results = filter(element);
 
         //Requires that above sorting process uniquely identifies the airlines!!Hopefully
 
         RealmObject ro = results.findAllAsync().remove(0);
+        //Removes the related realm object from the loginList
+        for (int i = 0; i < loginList.size(); i++) {
+
+            if (loginList.get(i).equals(ro)) {
+                loginList.remove(i);
+            }
+
+        }
         realm.commitTransaction();
         realm.close();
-        this.add(element);
-        this.loginList.remove(index);
+        this.add(newElement);
+
         return (LoginEvent) ro;
 
     }
@@ -101,6 +109,7 @@ public class Logins {
     public Login get(int index) {
         return this.loginList.get(index);
     }
+
 
     public void sort(Comparator c) {
         Collections.sort(loginList, c);

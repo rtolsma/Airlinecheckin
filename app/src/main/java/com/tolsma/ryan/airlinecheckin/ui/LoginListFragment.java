@@ -2,6 +2,7 @@ package com.tolsma.ryan.airlinecheckin.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ public class LoginListFragment extends Fragment {
 
     LoginListAdapter listAdapter;
 
+    @Inject
+    FragmentManager fragmentManager;
 
 
 
@@ -50,10 +53,13 @@ public class LoginListFragment extends Fragment {
     }
 
     public void showDialog() {
-        dialogFragment = new LoginDialogFragment();
-        dialogFragment.show(getFragmentManager().beginTransaction(), dialogFragment.getClass().getSimpleName());
-        dialogFragment.onComplete((login) -> {
+        dialogFragment = new LoginDialogFragment(false);
+        dialogFragment.show(fragmentManager, dialogFragment.getClass().getSimpleName());
+        dialogFragment.onComplete((login, toChange) -> {
 
+            if (toChange) {
+                //TODO, figure out how to implement resue of LoginDialogFragment
+            }
             logins.add(login);
             loginListView.invalidate();
         });
