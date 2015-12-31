@@ -1,10 +1,14 @@
 package com.tolsma.ryan.airlinecheckin.modules;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import javax.inject.Scope;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -16,10 +20,12 @@ import io.realm.Realm;
  */
 @Module
 public class AppModule {
-    Activity mActivity;
 
-    public AppModule(Activity activity) {
-        this.mActivity = activity;
+    Context ctx;
+
+
+    public AppModule(Context ctx) {
+        this.ctx = ctx;
     }
 
     @Provides
@@ -30,13 +36,24 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public Context provideActivityContext() {
-        return this.mActivity;
+    public Context provideApplicationContext() {
+        return this.ctx;
     }
 
     @Provides
     @Singleton
     public SharedPreferences provideSharedPreferences(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
+    }
+
+    @Provides
+    @Singleton
+    public LayoutInflater provideLayoutInflater(Context ctx) {
+        return (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Scope
+    public @interface PerApp {
     }
 }

@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.tolsma.ryan.airlinecheckin.CleanupApplication;
 import com.tolsma.ryan.airlinecheckin.R;
+import com.tolsma.ryan.airlinecheckin.adapters.LoginListAdapter;
 import com.tolsma.ryan.airlinecheckin.model.Logins;
 
 import javax.inject.Inject;
@@ -24,7 +26,11 @@ public class LoginListFragment extends Fragment {
     @Bind(R.id.fragment_login_list_view)
     public ListView loginListView;
     @Inject
-    private Logins logins;
+    Logins logins;
+
+    LoginListAdapter listAdapter;
+
+
 
 
     private LoginDialogFragment dialogFragment;
@@ -34,8 +40,12 @@ public class LoginListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ButterKnife.bind(this, container);
 
+        ButterKnife.bind(this, container);
+        CleanupApplication.getLoginComponent().inject(this);
+
+        listAdapter = new LoginListAdapter(logins);
+        loginListView.setAdapter(listAdapter);
         return inflater.inflate(R.layout.fragment_login_list, container, false);
     }
 

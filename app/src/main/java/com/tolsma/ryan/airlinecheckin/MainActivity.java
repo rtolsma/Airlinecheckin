@@ -13,9 +13,14 @@ import com.tolsma.ryan.airlinecheckin.ui.LoginListFragment;
 public class MainActivity extends AppCompatActivity {
 
     LoginListFragment loginListFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        CleanupApplication.getAppComponent().inject(this);
+
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

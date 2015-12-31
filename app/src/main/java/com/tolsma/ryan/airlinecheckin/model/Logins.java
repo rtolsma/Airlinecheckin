@@ -2,6 +2,7 @@ package com.tolsma.ryan.airlinecheckin.model;
 
 import android.content.Context;
 
+import com.tolsma.ryan.airlinecheckin.CleanupApplication;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.LoginEvent;
 import com.tolsma.ryan.airlinecheckin.utils.RealmUtils;
 
@@ -29,6 +30,7 @@ public class Logins {
 
     public Logins() {
         loginList = new ArrayList<>();
+        CleanupApplication.getAppComponent().inject(this);
     }
 
     public Logins(RealmResults<LoginEvent> results) {
@@ -90,6 +92,14 @@ public class Logins {
 
     public List<Login> getList() {
         return this.loginList;
+    }
+
+    public int size() {
+        return this.loginList.size();
+    }
+
+    public Login get(int index) {
+        return this.loginList.get(index);
     }
 
     public void sort(Comparator c) {
