@@ -38,14 +38,14 @@ public class LoginListFragment extends Fragment {
 
     private LoginDialogFragment dialogFragment;
     public LoginListFragment() {
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        ButterKnife.bind(this, container);
         CleanupApplication.getLoginComponent().inject(this);
+        ButterKnife.bind(this, container);
 
         listAdapter = new LoginListAdapter(logins);
         loginListView.setAdapter(listAdapter);

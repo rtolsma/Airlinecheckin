@@ -1,5 +1,7 @@
 package com.tolsma.ryan.airlinecheckin;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +12,13 @@ import android.view.View;
 
 import com.tolsma.ryan.airlinecheckin.ui.LoginListFragment;
 
+import javax.inject.Inject;
+
 public class MainActivity extends AppCompatActivity {
 
     LoginListFragment loginListFragment;
+    @Inject
+    FragmentTransaction ft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        loginListFragment = new LoginListFragment();
+        //On startup, open with the login list showing
+        showLoginList();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -57,5 +64,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showLoginList() {
+        loginListFragment=new LoginListFragment();
+        ft.add(R.id.)
+
     }
 }
