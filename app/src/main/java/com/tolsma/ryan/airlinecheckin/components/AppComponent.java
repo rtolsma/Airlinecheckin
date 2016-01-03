@@ -1,6 +1,7 @@
 package com.tolsma.ryan.airlinecheckin.components;
 
 
+import android.app.AlarmManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
@@ -49,5 +50,6 @@ public interface AppComponent {
     FragmentManager fragmentManager();
 
     FragmentTransaction fragmentTransaction();
+    AlarmManager alarmManager();
 
 }

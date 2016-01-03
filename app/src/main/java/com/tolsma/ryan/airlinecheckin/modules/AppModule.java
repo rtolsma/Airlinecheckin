@@ -1,5 +1,6 @@
 package com.tolsma.ryan.airlinecheckin.modules;
 
+import android.app.AlarmManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -77,6 +78,13 @@ public class AppModule {
     public FragmentTransaction provideFragmentTransaction(FragmentManager fm) {
         return fm.beginTransaction();
     }
+
+    @Provides
+    @Singleton
+    public AlarmManager provideAlarmManager(Context ctx) {
+        return (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+    }
+
     @Retention(RetentionPolicy.RUNTIME)
     @Scope
     public @interface PerApp {

@@ -62,35 +62,7 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
 
 
     boolean mIsEdit;
-    DialogInterface.OnClickListener dialogClickListener= new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch(which) {
-                case AlertDialog.BUTTON_POSITIVE:
-                    Date flightDate = getDate(mDatePicker, mTimePicker);
 
-                    loginEvent = new SouthwestLoginEvent();
-                    loginEvent.setFirstName(mFirstName.getText().toString());
-                    loginEvent.setLastName(mLastName.getText().toString());
-                    loginEvent.setConfirmationCode(mConfirmationCode.getText().toString());
-                    loginEvent.setFlightDate(flightDate);
-                    if(login!=null) {
-                        login.cancelAlarm(ctx);
-                    }
-
-                    login=new SouthwestLogin(loginEvent);
-                    onCompletion.onComplete(login);
-                    dialog.dismiss();
-                    break;
-                case AlertDialog.BUTTON_NEGATIVE: dialog.cancel();
-
-                    break;
-                default: //shouldn't happen
-
-            }
-
-        }
-    };
 
    private String mLoginType = null;
 
@@ -101,6 +73,7 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
         this.mIsEdit = changeLogin;
         this.loginPosition=pos;
         CleanupApplication.getLoginComponent().inject(this);
+       loginList= CleanupApplication.getLoginComponent().swLogins();
 
     }
 
@@ -125,7 +98,7 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
             Calendar cal= Calendar.getInstance();
             cal.setTime(flightDate);
             mDatePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH)
-                    , cal.get(Calendar.DAY_OF_MONTH) );
+                    , cal.get(Calendar.DAY_OF_MONTH));
         if(Build.VERSION.SDK_INT>=23) {
             mTimePicker.setHour(cal.get(Calendar.HOUR));
             mTimePicker.setMinute(cal.get(Calendar.MINUTE));
@@ -133,6 +106,10 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
             mTimePicker.setCurrentHour(cal.get(Calendar.HOUR));
             mTimePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
         }
+
+            mFirstName.setText(login.getSouthwestLoginEvent().getFirstName());
+            mLastName.setText(login.getSouthwestLoginEvent().getLastName());
+            mConfirmationCode.setText(login.getConfirmationCode());
 
             dialogBuilder.setPositiveButton(R.string.dialog_save, dialogClickListener)
                     .setNegativeButton(R.string.dialog_cancel, dialogClickListener);
@@ -156,7 +133,9 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
     public Date getDate(DatePicker dp, TimePicker tp) {
         if (tp != null & dp != null) {
 
-            long time = dp.getMinDate();
+            Calendar cal=Calendar.getInstance();
+            cal.set(dp.getYear(), dp.getMonth(), dp.getDayOfMonth());
+            long time = cal.getTimeInMillis();
             if (Build.VERSION.SDK_INT >= 23)
                 time += (tp.getHour() * MIN_PER_HOUR * SEC_PER_MIN + tp.getMinute() * SEC_PER_MIN) * SEC_PER_MILLISEC;
             else
@@ -179,6 +158,39 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
     public interface OnSuccessfulCompletion {
         void onComplete(SouthwestLogin login);
     }
+
+
+    DialogInterface.OnClickListener dialogClickListener= new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch(which) {
+                case AlertDialog.BUTTON_POSITIVE:
+                    Date flightDate = getDate(mDatePicker, mTimePicker);
+
+                    loginEvent = new SouthwestLoginEvent();
+                    loginEvent.setFirstName(mFirstName.getText().toString());
+                    loginEvent.setLastName(mLastName.getText().toString());
+                    loginEvent.setConfirmationCode(mConfirmationCode.getText().toString());
+                    loginEvent.setFlightDate(flightDate);
+                    if(login!=null) {
+                        login.cancelAlarm(ctx);
+                        loginList.getList().remove(loginPosition);
+
+                    }
+
+                    login=new SouthwestLogin(loginEvent);
+                    onCompletion.onComplete(login);
+                    dialog.dismiss();
+                    break;
+                case AlertDialog.BUTTON_NEGATIVE: dialog.cancel();
+
+                    break;
+                default: //shouldn't happen
+
+            }
+
+        }
+    };
 
 
 }

@@ -113,6 +113,8 @@ public class Logins {
 
 
     public void sort(Comparator<Login> c) {
+
+        if(size()<2) return;
         Collections.sort(loginList, c);
     }
 
