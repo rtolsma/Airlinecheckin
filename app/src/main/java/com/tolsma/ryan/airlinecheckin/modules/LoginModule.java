@@ -25,7 +25,6 @@ public class LoginModule {
     Logins provideLogins(Context ctx) {
         return SouthwestLogins.createFromRealm(ctx, SouthwestLoginEvent.class);
     }
-    @Singleton
     @Provides
     SouthwestLogins provideSouthwestLogins(Context ctx) {
 
