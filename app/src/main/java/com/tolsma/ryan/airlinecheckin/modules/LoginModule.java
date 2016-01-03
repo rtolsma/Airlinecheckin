@@ -6,6 +6,8 @@ import com.tolsma.ryan.airlinecheckin.model.Logins;
 import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -14,15 +16,24 @@ import dagger.Provides;
  */
 @Module
 public class LoginModule {
-
+    private static SouthwestLogins logins;
     public LoginModule() {
     }
 
 
     @Provides
-    Logins provideSouthwestLogins(Context ctx) {
+    Logins provideLogins(Context ctx) {
         return SouthwestLogins.createFromRealm(ctx, SouthwestLoginEvent.class);
     }
+    @Singleton
+    @Provides
+    SouthwestLogins provideSouthwestLogins(Context ctx) {
 
+        if(logins==null) {
+           logins= SouthwestLogins.createFromRealm(ctx, SouthwestLoginEvent.class);
+        }
+        return logins;
+
+    }
 
 }

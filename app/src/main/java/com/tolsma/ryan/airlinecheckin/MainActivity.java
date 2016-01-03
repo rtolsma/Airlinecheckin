@@ -1,7 +1,7 @@
 package com.tolsma.ryan.airlinecheckin;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -14,16 +14,19 @@ import com.tolsma.ryan.airlinecheckin.ui.LoginListFragment;
 
 import javax.inject.Inject;
 
+import hugo.weaving.DebugLog;
+
 public class MainActivity extends AppCompatActivity {
 
     LoginListFragment loginListFragment;
     @Inject
     FragmentTransaction ft;
 
+    @DebugLog
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        CleanupApplication.setComponents(this);
         CleanupApplication.getAppComponent().inject(this);
 
 
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
               //  Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
-                loginListFragment.showDialog();
+                loginListFragment.showDialog(false, -1);
             }
         });
     }
@@ -67,8 +70,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showLoginList() {
+       if(loginListFragment==null)
         loginListFragment=new LoginListFragment();
-        ft.add(R.id.)
+
+        ft.add(R.id.activity_main_fragment_container, loginListFragment, loginListFragment.TAG)
+            .commit();
+
 
     }
 }

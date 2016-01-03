@@ -55,6 +55,7 @@ public class Logins {
         if (!contains(element)) {
             loginList.add(element);
             RealmUtils.saveToRealm(ctx, element.getLoginEvent());
+        return true;
         }
         return false;
     }
@@ -111,7 +112,7 @@ public class Logins {
     }
 
 
-    public void sort(Comparator c) {
+    public void sort(Comparator<Login> c) {
         Collections.sort(loginList, c);
     }
 

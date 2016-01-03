@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.tolsma.ryan.airlinecheckin.components.AppComponent;
+
 import com.tolsma.ryan.airlinecheckin.components.DaggerAppComponent;
 import com.tolsma.ryan.airlinecheckin.components.DaggerLoginComponent;
 import com.tolsma.ryan.airlinecheckin.components.LoginComponent;
@@ -27,14 +28,17 @@ public class CleanupApplication extends Application {
         return loginComponent;
     }
 
+    public static void setComponents(MainActivity ma) {
+        appComponent= DaggerAppComponent.builder().appModule(new AppModule(ma)).build();
+        //Update LoginComponent accordingly
+        loginComponent= DaggerLoginComponent.builder().appComponent(appComponent).loginModule(
+                new LoginModule()).build();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         LeakCanary.install(this);
-
-
-        appComponent = DaggerAppComponent.builder().appModule(new AppModule(new MainActivity())).build();
-        loginComponent = DaggerLoginComponent.builder().appComponent(appComponent).loginModule(new LoginModule()).build();
     }
 
 

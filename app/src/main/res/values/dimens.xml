@@ -4,4 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="dialog_input">16dp</dimen>
+	<dimen name="login_item_margin">8dp</dimen>
+	<dimen name="login_item_font_size">16sp</dimen>
+	<dimen name="login_item_padding">5dp</dimen>
+	<dimen name="login_item_border_width">2dp</dimen>
+	<dimen name="login_item_elevation">100dp</dimen>
 </resources>

@@ -5,6 +5,9 @@ import android.content.Context;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
 import com.tolsma.ryan.airlinecheckin.utils.RealmUtils;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
@@ -20,6 +23,19 @@ public class SouthwestLogins extends Logins {
         }
     }
 
+
+    public boolean add(SouthwestLogin southwestLogin) {
+        if(!contains(southwestLogin)) {
+            getList().add(southwestLogin);
+            RealmUtils.saveToRealm(ctx, southwestLogin.getSouthwestLoginEvent());
+            return true;
+        }
+        return false;
+
+
+
+    }
+
     public static SouthwestLogins createFromRealm(Context ctx, Class<SouthwestLoginEvent> clazz) {
         return new SouthwestLogins(RealmUtils.getAllRealmResults(ctx, clazz));
     }
@@ -27,4 +43,5 @@ public class SouthwestLogins extends Logins {
     public RealmQuery filter(SouthwestLogin element) {
         return super.filter(element).equalTo("confirmationCode", element.getSouthwestLoginEvent().getConfirmationCode());
     }
+
 }

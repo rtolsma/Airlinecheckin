@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+			  android:layout_height="match_parent"
+			  android:padding="@dimen/login_item_padding"
+			  android:background="@drawable/login_item_border"
+			  android:elevation="@dimen/login_item_elevation"
+	>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_login_list_item_title"
+        android:layout_margin="@dimen/login_item_margin"
+		android:textSize="@dimen/login_item_font_size"
+		android:textColor="@color/login_list_item_text"
+		/>
+    <TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/fragment_login_list_item_name"
+		android:layout_margin="@dimen/login_item_margin"
+		android:textSize="@dimen/login_item_font_size"
+		android:textColor="@color/login_list_item_text"
+		/>
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/fragment_login_list_item_date"
+		android:layout_margin="@dimen/login_item_margin"
+		android:textSize="@dimen/login_item_font_size"
+		android:textColor="@color/login_list_item_text"
+		/>
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/fragment_login_list_item_confirmation"
+		android:layout_margin="@dimen/login_item_margin"
+		android:textSize="@dimen/login_item_font_size"
+		android:textColor="@color/login_list_item_text"
+
+		/>
+
+
+</LinearLayout>

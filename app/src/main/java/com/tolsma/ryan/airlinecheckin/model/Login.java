@@ -50,12 +50,13 @@ public class Login {
             i.putExtra(ConstantsConfig.LOGIN_INTENT_ID, id);
             mAlarmIntent = PendingIntent.getService(ctx, 0, i, 0);
 
+            long timeToAlarm=loginEvent.getFlightDate().getTime()-24*60*60*1000; //One day before flight
             if (Build.VERSION.SDK_INT >= 23)
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, loginEvent.getFlightDate().getTime(), mAlarmIntent);
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeToAlarm, mAlarmIntent);
             else if (Build.VERSION.SDK_INT >= 19)
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, loginEvent.getFlightDate().getTime(), mAlarmIntent);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeToAlarm, mAlarmIntent);
             else
-                alarmManager.set(AlarmManager.RTC_WAKEUP, loginEvent.getFlightDate().getTime(), mAlarmIntent);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, timeToAlarm, mAlarmIntent);
 
             return true;
         }
