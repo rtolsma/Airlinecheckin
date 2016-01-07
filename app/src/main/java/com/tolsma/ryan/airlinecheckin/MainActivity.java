@@ -1,34 +1,44 @@
 package com.tolsma.ryan.airlinecheckin;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tolsma.ryan.airlinecheckin.model.Login;
+import com.tolsma.ryan.airlinecheckin.model.SouthwestLogin;
+import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.ui.LoginListFragment;
+import com.tolsma.ryan.airlinecheckin.utils.RealmUtils;
 
 import javax.inject.Inject;
 
 import hugo.weaving.DebugLog;
+import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
 
     LoginListFragment loginListFragment;
     @Inject
     FragmentTransaction ft;
+    @Inject
+    Realm realm;
+
+    SouthwestLogins logins;
 
     @DebugLog
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         CleanupApplication.setComponents(this);
         CleanupApplication.getAppComponent().inject(this);
-
+        CleanupApplication.getLoginComponent().inject(this);
+        logins = CleanupApplication.getLoginComponent().swLogins();
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -69,13 +79,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        for (Login l : logins.getList()) {
+
+            RealmUtils.saveToRealm(this, ((SouthwestLogin) l).getSouthwestLoginEvent());
+        }
+
+    }
+
     public void showLoginList() {
        if(loginListFragment==null)
         loginListFragment=new LoginListFragment();
 
         ft.add(R.id.activity_main_fragment_container, loginListFragment, loginListFragment.TAG)
             .commit();
-
-
     }
 }

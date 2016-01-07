@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
 			  android:layout_height="match_parent"
-			  android:padding="@dimen/login_item_padding"
-			  android:background="@drawable/login_item_border"
+			  android:background="@drawable/login_item_background"
 			  android:elevation="@dimen/login_item_elevation"
+			  android:orientation="vertical"
+			  android:padding="@dimen/login_item_padding"
 	>
     <TextView
+		android:id="@+id/fragment_login_list_item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fragment_login_list_item_title"
         android:layout_margin="@dimen/login_item_margin"
-		android:textSize="@dimen/login_item_font_size"
 		android:textColor="@color/login_list_item_text"
+		android:textSize="@dimen/login_item_font_size"
 		/>
     <TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
 		android:id="@+id/fragment_login_list_item_name"
-		android:layout_margin="@dimen/login_item_margin"
-		android:textSize="@dimen/login_item_font_size"
-		android:textColor="@color/login_list_item_text"
-		/>
-	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/login_item_margin"
+		android:textColor="@color/login_list_item_text"
+		android:textSize="@dimen/login_item_font_size"
+		/>
+	<TextView
 		android:id="@+id/fragment_login_list_item_date"
-		android:layout_margin="@dimen/login_item_margin"
-		android:textSize="@dimen/login_item_font_size"
-		android:textColor="@color/login_list_item_text"
-		/>
-	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:id="@+id/fragment_login_list_item_confirmation"
 		android:layout_margin="@dimen/login_item_margin"
-		android:textSize="@dimen/login_item_font_size"
 		android:textColor="@color/login_list_item_text"
+		android:textSize="@dimen/login_item_font_size"
+		/>
+	<TextView
+		android:id="@+id/fragment_login_list_item_confirmation"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/login_item_margin"
+		android:textColor="@color/login_list_item_text"
+		android:textSize="@dimen/login_item_font_size"
 
 		/>
 

@@ -6,12 +6,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.view.LayoutInflater;
 
 import com.tolsma.ryan.airlinecheckin.MainActivity;
 import com.tolsma.ryan.airlinecheckin.adapters.LoginListAdapter;
 import com.tolsma.ryan.airlinecheckin.model.Logins;
 import com.tolsma.ryan.airlinecheckin.modules.AppModule;
+import com.tolsma.ryan.airlinecheckin.services.retrofit.SouthwestAPI;
 import com.tolsma.ryan.airlinecheckin.ui.LoginDialogFragment;
 
 import javax.inject.Singleton;
@@ -50,6 +53,12 @@ public interface AppComponent {
     FragmentManager fragmentManager();
 
     FragmentTransaction fragmentTransaction();
+
     AlarmManager alarmManager();
 
+    SouthwestAPI southwestAPI();
+
+    NotificationManagerCompat notificationManager();
+
+    NotificationCompat.Builder notificationBuilder();
 }

@@ -15,9 +15,9 @@ import android.widget.RelativeLayout;
 import com.tolsma.ryan.airlinecheckin.CleanupApplication;
 import com.tolsma.ryan.airlinecheckin.R;
 import com.tolsma.ryan.airlinecheckin.adapters.LoginListAdapter;
-import com.tolsma.ryan.airlinecheckin.model.Logins;
 import com.tolsma.ryan.airlinecheckin.model.SouthwestLogin;
 import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
+import com.tolsma.ryan.airlinecheckin.services.SouthwestValidityRequest;
 
 import javax.inject.Inject;
 
@@ -48,6 +48,13 @@ public class LoginListFragment extends Fragment {
 
 
     private LoginDialogFragment dialogFragment;
+    AdapterView.OnItemClickListener itemListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            showDialog(true, position);
+        }
+    };
+
     public LoginListFragment() {
         CleanupApplication.getLoginComponent().inject(this);
 
@@ -65,26 +72,24 @@ public class LoginListFragment extends Fragment {
         return loginListContainer;
     }
 
-
     public void showDialog(boolean isEdit, int pos) {
         dialogFragment = new LoginDialogFragment(isEdit, pos);
         dialogFragment.show(fragmentManager, dialogFragment.getClass().getSimpleName());
         dialogFragment.onComplete((login) -> {
-
+            if (login != null) {
             logins.add(login);
             login.setAlarm(ctx);
-            logins.sort( (one, two) -> ((SouthwestLogin) one).getSouthwestLoginEvent().getFlightDate()
-                    .compareTo(((SouthwestLogin)two).getSouthwestLoginEvent().getFlightDate()) );
+                logins.sort((one, two) -> ((SouthwestLogin) one).getSouthwestLoginEvent().getFlightDate()
+                        .compareTo(((SouthwestLogin) two).getSouthwestLoginEvent().getFlightDate()));
+            }
+
             ((BaseAdapter)loginListView.getAdapter()).notifyDataSetChanged();
+            if (login != null)
+                new Thread(new SouthwestValidityRequest(login)).start();
+
+
         });
 
     }
-
-    AdapterView.OnItemClickListener itemListener= new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            showDialog(true, position);
-        }
-    };
 
 }

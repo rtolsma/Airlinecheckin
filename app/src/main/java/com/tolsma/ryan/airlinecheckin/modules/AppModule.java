@@ -6,9 +6,14 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.view.LayoutInflater;
 
 import com.tolsma.ryan.airlinecheckin.MainActivity;
+import com.tolsma.ryan.airlinecheckin.services.retrofit.SouthwestAPI;
+import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
+import com.tolsma.ryan.airlinecheckin.utils.RetrofitUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -83,6 +88,26 @@ public class AppModule {
     @Singleton
     public AlarmManager provideAlarmManager(Context ctx) {
         return (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+    }
+
+    @Provides
+    @Singleton
+    public SouthwestAPI provideSouthwestAPI() {
+        return RetrofitUtils.createRetrofitService(SouthwestAPI.class, ConstantsConfig.SOUTHWEST_API);
+    }
+
+    @Provides
+    @Singleton
+    public NotificationManagerCompat provideNotificationMangager(Context ctx) {
+        return (NotificationManagerCompat.from(ctx));
+    }
+
+    @Provides
+    public NotificationCompat.Builder provideNotificationBuilder(Context ctx) {
+
+        return new NotificationCompat.Builder(ctx)
+                //TODO .setSmallIcon()
+                ;
     }
 
     @Retention(RetentionPolicy.RUNTIME)

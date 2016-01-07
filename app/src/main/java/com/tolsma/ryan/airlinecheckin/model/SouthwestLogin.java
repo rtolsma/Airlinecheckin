@@ -50,10 +50,10 @@ public class SouthwestLogin extends Login {
 
             if (getSouthwestLoginEvent().getFlightDate() != null) {
                 Intent i = new Intent(ctx, LoginAlarmService.class);
-                i.putExtra(ConstantsConfig.LOGIN_INTENT_ID, getConfirmationCode());
-                mAlarmIntent = PendingIntent.getService(ctx, 0, i, 0);
+                i.putExtra(ConstantsConfig.LOGIN_INTENT_ID, new String(getConfirmationCode()));
+                mAlarmIntent = PendingIntent.getService(ctx, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                long timeToAlarm = getSouthwestLoginEvent().getFlightDate().getTime() - 24 * 60 * 60 * 1000; //One day before flight
+                long timeToAlarm = getSouthwestLoginEvent().getFlightDate().getTime() - (24 * 60 * 60 * 1000) - (1 * 250); //One day+quarter sec. before flight
                 if (Build.VERSION.SDK_INT >= 23)
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeToAlarm, mAlarmIntent);
                 else if (Build.VERSION.SDK_INT >= 19)
