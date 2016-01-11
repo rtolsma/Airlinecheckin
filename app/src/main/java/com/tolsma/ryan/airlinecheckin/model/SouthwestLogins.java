@@ -3,88 +3,114 @@ package com.tolsma.ryan.airlinecheckin.model;
 import android.content.Context;
 import android.util.Log;
 
+import com.tolsma.ryan.airlinecheckin.CleanupApplication;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
+import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
 import com.tolsma.ryan.airlinecheckin.utils.RealmUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
  * Created by ryantolsma on 12/29/15.
  */
-public class SouthwestLogins extends Logins {
+public class SouthwestLogins {
+    @Inject
+    Context ctx;
+    @Inject
+    Realm realm;
+    private List<SouthwestLogin> loginList;
 
     public SouthwestLogins() {
-        super();
+        loginList = new ArrayList<>();
+        CleanupApplication.getAppComponent().inject(this);
     }
 
-    public SouthwestLogins(RealmResults<SouthwestLoginEvent> results) {
+    public SouthwestLogins(RealmResults<SouthwestLoginEvent> events) {
         this();
-        for (SouthwestLoginEvent e : results) {
-            add(new SouthwestLogin(e));
-            Log.d(SouthwestLogins.class.getSimpleName(), e.getConfirmationCode());
-
+        for (SouthwestLoginEvent sle : events) {
+            add(new SouthwestLogin(sle));
         }
+
     }
 
     public static SouthwestLogins createFromRealm(Context ctx, Class<SouthwestLoginEvent> clazz) {
         SouthwestLogins swl = new SouthwestLogins(RealmUtils.getAllRealmResults(ctx, clazz));
-        for (Login l : swl.getList()) {
-            Log.d(SouthwestLogins.class.getSimpleName(), ((SouthwestLogin) l).getSouthwestLoginEvent()
-                    .getConfirmationCode() + "   " + ((SouthwestLogin) l).getSouthwestLoginEvent().getFlightDate());
+        for (SouthwestLogin l : swl.getList()) {
+            Log.d(SouthwestLogins.class.getSimpleName(), l.getLoginEvent()
+                    .getConfirmationCode() + "   " + l.getLoginEvent().getFlightDate());
         }
         return swl;
+    }
+
+    public List<SouthwestLogin> getList() {
+        return loginList;
+    }
+
+    public int size() {
+        return loginList.size();
+    }
+
+    public boolean contains(SouthwestLogin element) {
+        return loginList.contains(element);
     }
 
     public boolean add(SouthwestLogin southwestLogin) {
         if(!contains(southwestLogin)) {
             getList().add(southwestLogin);
-            RealmUtils.saveToRealm(ctx, southwestLogin.getSouthwestLoginEvent());
+            RealmUtils.saveToRealm(ctx, southwestLogin.getLoginEvent());
             return true;
         }
         return false;
-
-
-
     }
 
-    public int getIndex(SouthwestLogin sl) {
-        return getIndex(sl.getSouthwestLoginEvent());
+    public boolean remove(int index) {
+        SouthwestLogin sl = get(index);
+        sl.cancelAlarm(ctx);
+        deleteFromRealm(sl);
+        return true;
     }
 
-    public int getIndex(SouthwestLoginEvent sle) {
+    public SouthwestLogin get(int index) {
+        return loginList.get(index);
+    }
+
+    public int indexOf(SouthwestLogin sl) {
         for (int i = 0; i < getList().size(); i++) {
-            if (get(i).equals(sle)) return i;
+            if (get(i).equals(sl)) return i;
+        }
+        return -1;
+    }
+
+    public int indexOf(String confirmationCode) {
+        for (int i = 0; i < size(); i++) {
+            if (get(i).getConfirmationCode().equals(confirmationCode))
+                return i;
+
         }
         return -1;
 
     }
 
-    public boolean delete(int index) {
-
-        SouthwestLogin sl = (SouthwestLogin) getList().remove(index);
+    private void deleteFromRealm(SouthwestLogin sl) {
         realm.beginTransaction();
-        realm.where(SouthwestLoginEvent.class)
-                .equalTo("confirmationCode", sl.getConfirmationCode())
-                .findAll().clear();
+        realm.where(sl.getLoginEvent().getClass()).equalTo(ConstantsConfig.SOUTHWEST_CONFIRMATION_CODE
+                , sl.getConfirmationCode()).findAll().clear();
         realm.commitTransaction();
-        sl.cancelAlarm(ctx);
-        return true;
 
     }
 
-    public boolean delete(SouthwestLogin sl) {
-        int i = getIndex(sl);
-        if (i == -1) return false;
+    public void sort(Comparator<SouthwestLogin> c) {
 
-        else return delete(i);
-
-
+        if (size() < 2) return;
+        Collections.sort(loginList, c);
     }
-  /*  public RealmQuery filter(SouthwestLogin element) {
-        SouthwestLoginEvent sle=element.getSouthwestLoginEvent();
-
-        return realm.where(SouthwestLoginEvent.class)
-         .equalTo("confirmationCode", element.getSouthwestLoginEvent().getConfirmationCode()).f;
-    } */
 
 }

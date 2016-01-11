@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import com.tolsma.ryan.airlinecheckin.model.realmobjects.LoginEvent;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
 import com.tolsma.ryan.airlinecheckin.services.LoginAlarmService;
 import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
@@ -14,25 +13,22 @@ import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
 /**
  * Created by ryan on 12/22/15.
  */
-public class SouthwestLogin extends Login {
+public class SouthwestLogin {
 
 
     public static final String AIRLINE = "Southwest Airline";
 
     private SouthwestLoginEvent southwestLoginEvent;
-
-    public SouthwestLogin(LoginEvent event) {
-        SouthwestLoginEvent sle = new SouthwestLoginEvent();
-        sle.setLastName(event.getLastName());
-        sle.setFirstName(event.getFirstName());
-        sle.setFlightDate(event.getFlightDate());
-        this.southwestLoginEvent = southwestLoginEvent;
-
-    }
+    private PendingIntent mAlarmIntent;
 
     public SouthwestLogin(SouthwestLoginEvent southwestLoginEvent) {
         this.southwestLoginEvent = southwestLoginEvent;
     }
+
+    public SouthwestLogin() {
+        this(null);
+    }
+
 
 
 
@@ -48,12 +44,12 @@ public class SouthwestLogin extends Login {
                 mAlarmIntent = null;
             }
 
-            if (getSouthwestLoginEvent().getFlightDate() != null) {
+            if (getLoginEvent().getFlightDate() != null) {
                 Intent i = new Intent(ctx, LoginAlarmService.class);
                 i.putExtra(ConstantsConfig.LOGIN_INTENT_ID, new String(getConfirmationCode()));
                 mAlarmIntent = PendingIntent.getService(ctx, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                long timeToAlarm = getSouthwestLoginEvent().getFlightDate().getTime() - (24 * 60 * 60 * 1000) - (1 * 250); //One day+quarter sec. before flight
+                long timeToAlarm = getLoginEvent().getFlightDate().getTime() - (24 * 60 * 60 * 1000) - (1 * 250); //One day+quarter sec. before flight
                 if (Build.VERSION.SDK_INT >= 23)
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeToAlarm, mAlarmIntent);
                 else if (Build.VERSION.SDK_INT >= 19)
@@ -68,6 +64,13 @@ public class SouthwestLogin extends Login {
 
     }
 
+    public boolean cancelAlarm(Context ctx) {
+        if (mAlarmIntent == null || ctx == null) return false;
+        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+        am.cancel(mAlarmIntent);
+        return true;
+    }
+
     public String getConfirmationCode() {
         return southwestLoginEvent.getConfirmationCode();
     }
@@ -76,13 +79,13 @@ public class SouthwestLogin extends Login {
         southwestLoginEvent.setConfirmationCode(mConfirmationCode);
     }
 
-    public SouthwestLoginEvent getSouthwestLoginEvent() {
+    public SouthwestLoginEvent getLoginEvent() {
         return southwestLoginEvent;
 
     }
 
     public SouthwestLoginEvent setSouthwestLoginEvent(SouthwestLoginEvent event) {
-        SouthwestLoginEvent temp = this.getSouthwestLoginEvent();
+        SouthwestLoginEvent temp = this.getLoginEvent();
         this.southwestLoginEvent = event;
         return temp;
 

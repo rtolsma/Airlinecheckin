@@ -8,6 +8,6 @@
 	<dimen name="login_item_font_size">16sp</dimen>
 	<dimen name="login_item_padding">5dp</dimen>
 	<dimen name="login_item_background_width">5dp</dimen>
-	<dimen name="login_item_elevation">5dp</dimen>
+	<dimen name="login_item_elevation">10dp</dimen>
 	<dimen name="login_item_background_radius">5dp</dimen>
 </resources>

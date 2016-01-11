@@ -1,21 +1,20 @@
 package com.tolsma.ryan.airlinecheckin.components;
 
 
-import android.app.AlarmManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.view.LayoutInflater;
 
 import com.tolsma.ryan.airlinecheckin.MainActivity;
 import com.tolsma.ryan.airlinecheckin.adapters.LoginListAdapter;
-import com.tolsma.ryan.airlinecheckin.model.Logins;
+import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.modules.AppModule;
+import com.tolsma.ryan.airlinecheckin.modules.LoginModule;
+import com.tolsma.ryan.airlinecheckin.services.LoginAlarmService;
 import com.tolsma.ryan.airlinecheckin.services.retrofit.SouthwestAPI;
 import com.tolsma.ryan.airlinecheckin.ui.LoginDialogFragment;
+import com.tolsma.ryan.airlinecheckin.ui.LoginListFragment;
 
 import javax.inject.Singleton;
 
@@ -28,33 +27,28 @@ import io.realm.Realm;
 
 
 @Singleton
-@Component(modules = {AppModule.class})
+@Component(modules = {AppModule.class, LoginModule.class})
 public interface AppComponent {
-    void inject(Logins logins);
 
     void inject(MainActivity mainActivity);
 
-    // void inject(LoginListFragment llf);
+    void inject(LoginListFragment llf);
 
     void inject(LoginDialogFragment ldf);
 
     void inject(LoginListAdapter lla);
+
+    void inject(LoginAlarmService las);
+
+    void inject(SouthwestLogins swls);
+
+    SouthwestLogins swLogins();
 
     Context context();
 
     Realm realm();
 
     SharedPreferences sharedPreference();
-
-    LayoutInflater layoutInflater();
-
-    MainActivity mainActivity();
-
-    FragmentManager fragmentManager();
-
-    FragmentTransaction fragmentTransaction();
-
-    AlarmManager alarmManager();
 
     SouthwestAPI southwestAPI();
 

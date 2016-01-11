@@ -1,7 +1,6 @@
 package com.tolsma.ryan.airlinecheckin.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +9,8 @@ import android.widget.TextView;
 
 import com.tolsma.ryan.airlinecheckin.CleanupApplication;
 import com.tolsma.ryan.airlinecheckin.R;
-import com.tolsma.ryan.airlinecheckin.model.Login;
-import com.tolsma.ryan.airlinecheckin.model.Logins;
 import com.tolsma.ryan.airlinecheckin.model.SouthwestLogin;
-import com.tolsma.ryan.airlinecheckin.model.realmobjects.LoginEvent;
+import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
 
 import javax.inject.Inject;
@@ -23,24 +20,27 @@ import javax.inject.Inject;
  */
 public class LoginListAdapter extends BaseAdapter {
 
-    @Inject
+    // @Inject
     LayoutInflater layoutInflater;
     @Inject
     Context ctx;
-    private Logins logins;
+    private SouthwestLogins logins;
 
-    public LoginListAdapter(Logins logins) {
+    public LoginListAdapter(SouthwestLogins logins) {
         this.logins = logins;
-        CleanupApplication.getAppComponent().inject(this);
     }
 
 
     //TODO implement getView, but need to create XML first
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        CleanupApplication.getActivityComponent().inject(this);
+        layoutInflater = CleanupApplication.getActivityComponent().layoutInflater();
+
+
         View v;
         LoginViewHolder loginViewHolder;
-        SouthwestLoginEvent temp= ((SouthwestLogin)logins.get(position)).getSouthwestLoginEvent();
+        SouthwestLoginEvent temp = logins.get(position).getLoginEvent();
         if (convertView == null) {
             v=layoutInflater.inflate(R.layout.fragment_login_list_item, parent, false);
             //Create viewholder to decrease calls to findViewById by holding references to objects
@@ -71,6 +71,20 @@ public class LoginListAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public void remove(String confirmationCode) {
+        logins.remove(logins.indexOf(confirmationCode));
+    }
+
+    public void remove(SouthwestLogin sl) {
+        int index = logins.indexOf(sl);
+        remove(index);
+    }
+
+    public void remove(int index) {
+        logins.remove(index);
+
+    }
+
     @Override
     public int getCount() {
         return logins.size();
@@ -83,7 +97,7 @@ public class LoginListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Login getItem(int pos) {
+    public SouthwestLogin getItem(int pos) {
         return logins.get(pos);
     }
 

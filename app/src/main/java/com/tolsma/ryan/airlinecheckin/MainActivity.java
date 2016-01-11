@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tolsma.ryan.airlinecheckin.model.Login;
 import com.tolsma.ryan.airlinecheckin.model.SouthwestLogin;
 import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.ui.LoginListFragment;
@@ -23,7 +22,7 @@ import io.realm.Realm;
 public class MainActivity extends AppCompatActivity {
 
     LoginListFragment loginListFragment;
-    @Inject
+    //@Inject
     FragmentTransaction ft;
     @Inject
     Realm realm;
@@ -35,10 +34,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        CleanupApplication.setComponents(this);
+        CleanupApplication.setActivityComponents(this);
         CleanupApplication.getAppComponent().inject(this);
-        CleanupApplication.getLoginComponent().inject(this);
-        logins = CleanupApplication.getLoginComponent().swLogins();
+        ft = CleanupApplication.getActivityComponent().fragmentTransaction();
+        // CleanupApplication.getActivityComponent().inject(this);
+        logins = CleanupApplication.getAppComponent().swLogins();
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -82,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        for (Login l : logins.getList()) {
+        for (SouthwestLogin l : logins.getList()) {
 
-            RealmUtils.saveToRealm(this, ((SouthwestLogin) l).getSouthwestLoginEvent());
+            RealmUtils.saveToRealm(this, l.getLoginEvent());
         }
 
     }
@@ -95,5 +95,9 @@ public class MainActivity extends AppCompatActivity {
 
         ft.add(R.id.activity_main_fragment_container, loginListFragment, loginListFragment.TAG)
             .commit();
+    }
+
+    public LoginListFragment getLoginListFragment() {
+        return loginListFragment;
     }
 }

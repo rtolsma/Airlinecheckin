@@ -1,29 +1,40 @@
 package com.tolsma.ryan.airlinecheckin.services;
 
-import android.app.Service;
+import android.app.IntentService;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.Toast;
 
+import com.tolsma.ryan.airlinecheckin.CleanupApplication;
+import com.tolsma.ryan.airlinecheckin.MainActivity;
 import com.tolsma.ryan.airlinecheckin.model.SouthwestLogin;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
 import com.tolsma.ryan.airlinecheckin.services.retrofit.SouthwestAPI;
 import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
 import com.tolsma.ryan.airlinecheckin.utils.RetrofitUtils;
 
+import javax.inject.Inject;
+
 import hugo.weaving.DebugLog;
 import io.realm.Realm;
 
-public class LoginAlarmService extends Service {
+public class LoginAlarmService extends IntentService {
 
-    public static final String southwestConfirmationCode = "confirmationCode";
+    @Inject
     Realm realm;
     SouthwestAPI api;
+    @Inject
     NotificationManagerCompat notificationManager;
+    SouthwestLogin southwestLogin;
+    MainActivity ma;
 
+    public LoginAlarmService(String name) {
+        super(name);
+    }
     public LoginAlarmService() {
-
+        super(LoginAlarmService.class.getSimpleName());
     }
 
     public void init() {
@@ -33,27 +44,61 @@ public class LoginAlarmService extends Service {
 
     @DebugLog
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void onHandleIntent(Intent intent) {
         init();
-        realm = Realm.getInstance(this);
+        CleanupApplication.getAppComponent().inject(this);
+        ma = CleanupApplication.getActivityComponent().mainActivity();
         api = RetrofitUtils.createRetrofitService(SouthwestAPI.class, ConstantsConfig.SOUTHWEST_API);
-        notificationManager = NotificationManagerCompat.from(this);
-        SouthwestLogin southwestLogin = new SouthwestLogin(realm.where(SouthwestLoginEvent.class)
-                .equalTo(southwestConfirmationCode,
-                        intent.getStringExtra(ConstantsConfig.LOGIN_INTENT_ID)).findAllAsync().get(0));
-
-        //  for( SouthwestLoginEvent sle:   realm.where(SouthwestLoginEvent.class).findAll())
-        //         Log.d(getClass().getSimpleName(),"RealmRetrieval Confirmation code: "+ sle.getConfirmationCode());
-        //Gets 0th element due, to there being a primary key
-        Toast.makeText(this, "Started service from login with cc: " + southwestLogin.getConfirmationCode(),
-                Toast.LENGTH_LONG).show();
+        //Get the corresponding request from Realm, and deletes it from storage
+        southwestLogin = new SouthwestLogin(realm.where(SouthwestLoginEvent.class)
+                .equalTo(ConstantsConfig.SOUTHWEST_CONFIRMATION_CODE,
+                        intent.getStringExtra(ConstantsConfig.LOGIN_INTENT_ID)).findAll().get(0));
 
 
-        return 0;
+        //DEBUGGING, test if Realm retrieval is working, workaround for Toast
+        sendToast("Starting IntentService with confirmation code: "
+                + southwestLogin.getConfirmationCode(), Toast.LENGTH_SHORT);
+
+
+        //TODO change ! for debugging
+        if (!SouthwestValidityRequest.isLoginValid(southwestLogin)) {
+            //The login is valid
+            //Can't use dagger because it may not be instantiated with MainActivity setActivityComponents
+            SouthwestAPI api = RetrofitUtils.createRetrofitService(SouthwestAPI.class, ConstantsConfig.SOUTHWEST_API);
+
+            deleteLogin();
+
+
+        }
+
+
     }
 
+    @DebugLog
+    public boolean deleteLogin() {
+        //Delete the Login from the UI if its running currently, since no longer needed
+        realm.beginTransaction();
+        realm.where(SouthwestLoginEvent.class).equalTo(ConstantsConfig.SOUTHWEST_CONFIRMATION_CODE,
+                southwestLogin.getConfirmationCode()).findAll().remove(0);
+        realm.commitTransaction();
 
+        if (ma != null && ma.getLoginListFragment() != null) {
 
+            ma.getLoginListFragment().getLoginListAdapter().remove(southwestLogin);
+            ma.getLoginListFragment().getLoginListAdapter().notifyDataSetChanged();
+
+            return true;
+        }
+        //indicates UI not active
+        return false;
+    }
+
+    public void sendToast(String message, int length) {
+
+        new Handler(getMainLooper()).post(() ->
+                Toast.makeText(this, message, length).show());
+
+    }
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.

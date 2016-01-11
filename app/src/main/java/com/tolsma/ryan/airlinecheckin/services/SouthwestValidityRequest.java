@@ -16,7 +16,9 @@ import com.tolsma.ryan.airlinecheckin.model.SouthwestLogin;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
 import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import hugo.weaving.DebugLog;
 import retrofit.Call;
@@ -33,14 +35,13 @@ public class SouthwestValidityRequest implements Runnable {
         this.sl = sl;
     }
 
-    public void run() {
-
-        this.isLoginValid(sl);
-
+    public SouthwestValidityRequest() {
+        this(null);
     }
 
     @DebugLog
-    public boolean isLoginValid(SouthwestLogin sl) {
+    public static boolean isLoginValid(SouthwestLogin sl) {
+
         AppComponent dap = CleanupApplication.getAppComponent();
         Context ctx = dap.context();
         NotificationManagerCompat nmc = dap.notificationManager();
@@ -48,7 +49,7 @@ public class SouthwestValidityRequest implements Runnable {
         if (sl == null) return false; //Most likely, been deleted from listview since thread launch
 
 
-        SouthwestLoginEvent sle = sl.getSouthwestLoginEvent();
+        SouthwestLoginEvent sle = sl.getLoginEvent();
         Call<ResponseBody> responseBodyCall = CleanupApplication.getAppComponent()
                 .southwestAPI().sendLogin(
                         sl.getConfirmationCode(), sle.getFirstName(),
@@ -60,23 +61,35 @@ public class SouthwestValidityRequest implements Runnable {
 
 
             ResponseBody responseBody = bodyResponse.body();
-            String response = responseBody.string();
-            Log.d(getClass().getSimpleName(), response.toString());
+
+            String response = responseBody == null ? null : responseBody.string();
+            Log.d(SouthwestValidityRequest.class.getSimpleName(), response.toString());
+            //For debugging
+            File file = new File(ctx.getFilesDir().getPath() + "log.txt");
+            PrintWriter pw = new PrintWriter(file);
+            pw.println(response);
+
+
             PendingIntent pi = PendingIntent.getActivity(ctx, 0,
                     new Intent(ctx, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
             if (response == null) throw (new IOException("Response is null"));
 
-            Log.d(this.getClass().getSimpleName(), response);
+            Log.d(SouthwestValidityRequest.class.getSimpleName(), response);
             if (response.contains(ConstantsConfig.SOUTHWEST_RESERVATION_ERROR)) {
 
 
                 Notification notification = builder
                         .setContentTitle("Southwest Reservation Error")
-                        .setContentText("The reservation with confirmation code: "
-                                + sl.getConfirmationCode() + " does not exist with the currently specified data")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("The reservation with confirmation code: "
+                                + sl.getConfirmationCode() + " does not exist within the Southwest database"))
                         .setContentIntent(pi)
                         .build();
+             /*  uiWorker=()-> Toast.makeText(ctx, "Reservation with confirmation code: "+sl.getConfirmationCode()+
+                        "doesn't exist!!!", Toast.LENGTH_LONG).show();
+            */
+
+
                 nmc.notify(sl.getConfirmationCode().hashCode(), notification);
                 return false;
 
@@ -90,20 +103,43 @@ public class SouthwestValidityRequest implements Runnable {
         } catch (IOException e) {
 
             builder.setContentTitle("Connection Issue")
-                    .setContentText("There was an error in connecting to the internet to " +
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText("There was an error in connecting to the internet to " +
                             "verify the validity of the reservation with confirmation code " +
-                            sl.getConfirmationCode() + "\n Please check that you have internet access");
+                            sl.getConfirmationCode() + "\n Please check that you have internet access"));
 
+           /* Toast.makeText(ctx,"There was an error in verifying the reservation with confirmation code! "+sl.getConfirmationCode()
+                    +" Please make sure that this reservation exists and that you have an active internet connection!", Toast.LENGTH_LONG)
+                    .show();
+                    */
             nmc.notify(sl.getConfirmationCode().hashCode(), builder.build());
             return false;
 
 
         }
 
-
+        Notification notification = builder
+                .setContentTitle("Unable to Validate Login Credentials")
+                .setStyle(new NotificationCompat.BigTextStyle().bigText("For some reason, there was an error in verifying the " +
+                        "credentials for the login with confirmation code: " + sl.getConfirmationCode()
+                        + "\n This may be caused by a change in the Southwest Website, please notify" +
+                        "me at ______ so that I may update the application. Please make sure that" +
+                        "you don't forget to manually login at : " + sle.getFlightDate().toString() +
+                        " if this error continues to persist")).build();
+        nmc.notify(sl.getConfirmationCode().hashCode(), notification);
         return false;
 
 
     }
+
+    //static Runnable uiWorker;
+    public void run() {
+
+        this.isLoginValid(sl);
+
+    }
+
+
+
+
 
 }

@@ -4,13 +4,10 @@ import android.app.AlarmManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.view.LayoutInflater;
 
-import com.tolsma.ryan.airlinecheckin.MainActivity;
+import com.tolsma.ryan.airlinecheckin.R;
 import com.tolsma.ryan.airlinecheckin.services.retrofit.SouthwestAPI;
 import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
 import com.tolsma.ryan.airlinecheckin.utils.RetrofitUtils;
@@ -32,12 +29,11 @@ import io.realm.Realm;
 public class AppModule {
 
     Context ctx;
-    MainActivity ma;
 
 
-    public AppModule(MainActivity mainActivity) {
-        ma = mainActivity;
-        ctx = ma.getApplication();
+    public AppModule(Context context) {
+
+        ctx = context;
     }
 
 
@@ -50,8 +46,9 @@ public class AppModule {
     @Provides
     @Singleton
     public Context provideApplicationContext() {
-        return this.ctx;
+        return this.ctx.getApplicationContext();
     }
+
 
     @Provides
     @Singleton
@@ -59,30 +56,7 @@ public class AppModule {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
     }
 
-    @Provides
-    @Singleton
-    public LayoutInflater provideLayoutInflater(Context ctx) {
-        return (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
 
-    @Provides
-    @Singleton
-    public MainActivity provideMainActivity() {
-        return this.ma;
-    }
-
-    @Provides
-    @Singleton
-    public FragmentManager provideFragmentManager(Context ctx) {
-        return
-                ma.getSupportFragmentManager();
-    }
-
-    @Provides
-    @Singleton
-    public FragmentTransaction provideFragmentTransaction(FragmentManager fm) {
-        return fm.beginTransaction();
-    }
 
     @Provides
     @Singleton
@@ -106,7 +80,7 @@ public class AppModule {
     public NotificationCompat.Builder provideNotificationBuilder(Context ctx) {
 
         return new NotificationCompat.Builder(ctx)
-                //TODO .setSmallIcon()
+                .setSmallIcon(R.mipmap.ic_launcher)
                 ;
     }
 
@@ -114,4 +88,10 @@ public class AppModule {
     @Scope
     public @interface PerApp {
     }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Scope
+    public @interface PerActivity {
+    }
+
 }

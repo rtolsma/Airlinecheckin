@@ -12,10 +12,11 @@ import retrofit.http.POST;
  */
 public interface SouthwestAPI {
     @FormUrlEncoded
-    @POST("/")
+
+    @POST("/flight/retrieveCheckinDoc.html")
     Call<ResponseBody> sendLogin(@Field("confirmationNumber") String confirmationNumber,
                                  @Field("firstName") String firstName,
                                  @Field("lastName") String lastName,
-                                 @Field("checkinButton") String button);
+                                 @Field("submitButton") String button);
 
 }

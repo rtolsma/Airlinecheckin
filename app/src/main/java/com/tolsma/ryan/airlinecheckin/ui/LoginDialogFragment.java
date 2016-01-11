@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.tolsma.ryan.airlinecheckin.CleanupApplication;
 import com.tolsma.ryan.airlinecheckin.R;
-import com.tolsma.ryan.airlinecheckin.model.Login;
 import com.tolsma.ryan.airlinecheckin.model.SouthwestLogin;
 import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
@@ -76,8 +75,10 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
 
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
-        CleanupApplication.getLoginComponent().inject(this);
-        loginList = CleanupApplication.getLoginComponent().swLogins();
+        CleanupApplication.getAppComponent().inject(this);
+
+
+        loginList = CleanupApplication.getAppComponent().swLogins();
         mDialogLayout = (ScrollView) getActivity().getLayoutInflater().inflate(R.layout.fragment_login_dialog, null);
         ButterKnife.bind(this, mDialogLayout);
 
@@ -98,21 +99,21 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
         if (mIsEdit && loginPosition >= 0) {
 
             login= (SouthwestLogin) loginList.get(loginPosition);
-            Date flightDate=login.getSouthwestLoginEvent().getFlightDate();
+            Date flightDate = login.getLoginEvent().getFlightDate();
             Calendar cal= Calendar.getInstance();
             cal.setTime(flightDate);
             mDatePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH)
                     , cal.get(Calendar.DAY_OF_MONTH));
         if(Build.VERSION.SDK_INT>=23) {
-            mTimePicker.setHour(cal.get(Calendar.HOUR));
+            mTimePicker.setHour(cal.get(Calendar.HOUR_OF_DAY));
             mTimePicker.setMinute(cal.get(Calendar.MINUTE));
         } else {
-            mTimePicker.setCurrentHour(cal.get(Calendar.HOUR));
+            mTimePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
             mTimePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
         }
 
-            mFirstName.setText(login.getSouthwestLoginEvent().getFirstName());
-            mLastName.setText(login.getSouthwestLoginEvent().getLastName());
+            mFirstName.setText(login.getLoginEvent().getFirstName());
+            mLastName.setText(login.getLoginEvent().getLastName());
             mConfirmationCode.setText(login.getConfirmationCode());
 
             dialogBuilder.setPositiveButton(R.string.dialog_save, null)
@@ -141,9 +142,10 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
 
                     case AlertDialog.BUTTON_POSITIVE:
 
-                        for (Login l : loginList.getList()) {
-                            if (((SouthwestLogin) l).getConfirmationCode()
+                        for (SouthwestLogin l : loginList.getList()) {
+                            if (l.getConfirmationCode()
                                     .equals(mConfirmationCode.getText().toString()) && !mIsEdit) {
+
                                 Toast.makeText(ctx, "Must have uniqe confirmation codes!"
                                         , Toast.LENGTH_SHORT).show();
                                 return;
@@ -166,9 +168,12 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
                         } else if (loginEvent.getConfirmationCode().length() != 6) {
                             Toast.makeText(ctx, "Confirmation code must be a unique 6-digit alphanumeric sequence!", Toast.LENGTH_SHORT).show();
                             return;
+                        } else if (flightDate.getTime() < Calendar.getInstance().getTimeInMillis()) {
+                            Toast.makeText(ctx, "Flight Time must not be in the past!!! (Can't time travel)"
+                                    , Toast.LENGTH_SHORT).show();
                         }
                         if (login != null) {
-                            loginList.delete(loginPosition);
+                            loginList.remove(loginPosition);
 
                         }
 
@@ -178,7 +183,7 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
                         if (login != null) {
-                            loginList.delete(loginPosition);
+                            loginList.remove(loginPosition);
                             onCompletion.onComplete(null);
                         }
                         alertDialog.cancel();
@@ -230,6 +235,7 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
                 cal.set(dp.getYear(), dp.getMonth(), dp.getDayOfMonth(),
                         tp.getCurrentHour(), tp.getCurrentMinute());
 
+            cal.set(Calendar.SECOND, 0);
             return new Date(cal.getTimeInMillis() - cal.getTimeInMillis() % 10000); //Don't count the seconds
         }
         return null;
