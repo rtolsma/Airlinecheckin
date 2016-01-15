@@ -7,6 +7,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
 import com.tolsma.ryan.airlinecheckin.R;
 import com.tolsma.ryan.airlinecheckin.services.retrofit.SouthwestAPI;
 import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
@@ -29,10 +31,11 @@ import io.realm.Realm;
 public class AppModule {
 
     Context ctx;
+    Bus eventBus;
 
 
     public AppModule(Context context) {
-
+        eventBus = new Bus(ThreadEnforcer.ANY);
         ctx = context;
     }
 
@@ -83,6 +86,15 @@ public class AppModule {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 ;
     }
+
+    @Provides
+    @Singleton
+    public Bus provideEventBus() {
+        return this.eventBus;
+    }
+
+
+
 
     @Retention(RetentionPolicy.RUNTIME)
     @Scope

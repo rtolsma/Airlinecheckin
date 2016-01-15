@@ -1,4 +1,4 @@
-package com.tolsma.ryan.airlinecheckin.model;
+package com.tolsma.ryan.airlinecheckin.model.logins;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -84,7 +84,7 @@ public class SouthwestLogin {
 
     }
 
-    public SouthwestLoginEvent setSouthwestLoginEvent(SouthwestLoginEvent event) {
+    public SouthwestLoginEvent setLoginEvent(SouthwestLoginEvent event) {
         SouthwestLoginEvent temp = this.getLoginEvent();
         this.southwestLoginEvent = event;
         return temp;

@@ -17,8 +17,8 @@ import android.widget.Toast;
 
 import com.tolsma.ryan.airlinecheckin.CleanupApplication;
 import com.tolsma.ryan.airlinecheckin.R;
-import com.tolsma.ryan.airlinecheckin.model.SouthwestLogin;
-import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
+import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogin;
+import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
 
 import java.util.Calendar;
@@ -32,12 +32,10 @@ import hugo.weaving.DebugLog;
 /**
 
  */
-public class LoginDialogFragment extends DialogFragment implements ExtendedFragment {
+public class LoginDialogFragment extends DialogFragment implements ExtendedUI {
+    private static boolean isAlive = false;
     final int MIN_PER_HOUR = 60, SEC_PER_MIN = 60, SEC_PER_MILLISEC = 1000;
-
-
     ScrollView mDialogLayout;
-
     @Inject
     Context ctx;
 
@@ -171,6 +169,7 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
                         } else if (flightDate.getTime() < Calendar.getInstance().getTimeInMillis()) {
                             Toast.makeText(ctx, "Flight Time must not be in the past!!! (Can't time travel)"
                                     , Toast.LENGTH_SHORT).show();
+                            return;
                         }
                         if (login != null) {
                             loginList.remove(loginPosition);
@@ -213,6 +212,24 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedFragm
         alertDialog.setOnShowListener(dialogShowListener);
         return alertDialog;
 
+    }//end of createdialog
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        isAlive = true;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isAlive = false;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return isAlive;
     }
 
     @Override

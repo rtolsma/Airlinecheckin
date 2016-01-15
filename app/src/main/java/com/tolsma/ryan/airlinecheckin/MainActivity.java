@@ -1,6 +1,8 @@
 package com.tolsma.ryan.airlinecheckin;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -8,9 +10,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
-import com.tolsma.ryan.airlinecheckin.model.SouthwestLogin;
-import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import com.tolsma.ryan.airlinecheckin.model.events.ToastEvent;
+import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogin;
+import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
+import com.tolsma.ryan.airlinecheckin.ui.ExtendedUI;
 import com.tolsma.ryan.airlinecheckin.ui.LoginListFragment;
 import com.tolsma.ryan.airlinecheckin.utils.RealmUtils;
 
@@ -19,13 +26,16 @@ import javax.inject.Inject;
 import hugo.weaving.DebugLog;
 import io.realm.Realm;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ExtendedUI {
+
+    private static boolean isAlive = false;
 
     LoginListFragment loginListFragment;
-    //@Inject
     FragmentTransaction ft;
     @Inject
     Realm realm;
+    @Inject
+    Bus eventBus;
 
     SouthwestLogins logins;
 
@@ -56,6 +66,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isAlive = true;
+        eventBus.register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isAlive = false;
+        eventBus.unregister(this);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -100,4 +125,29 @@ public class MainActivity extends AppCompatActivity {
     public LoginListFragment getLoginListFragment() {
         return loginListFragment;
     }
+
+    @Override
+    public String getTag() {
+        return getClass().getSimpleName();
+    }
+
+    @Override
+    public boolean isAlive() {
+        return this.isAlive;
+    }
+
+    /*
+    Below are some standard otto event subscriptions required for interacting with the UI
+     */
+
+    @Subscribe
+    public void deliverToast(ToastEvent te) {
+        //To be usable by background threads
+        Handler h = new Handler(Looper.getMainLooper());
+        h.post(() ->
+                        Toast.makeText(this, te.getMessage(), te.getLength()).show()
+        );
+    }
+
+
 }

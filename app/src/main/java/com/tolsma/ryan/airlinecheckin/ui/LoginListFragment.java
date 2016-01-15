@@ -12,11 +12,14 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import com.tolsma.ryan.airlinecheckin.CleanupApplication;
 import com.tolsma.ryan.airlinecheckin.R;
 import com.tolsma.ryan.airlinecheckin.adapters.LoginListAdapter;
-import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
-import com.tolsma.ryan.airlinecheckin.services.SouthwestValidityRequest;
+import com.tolsma.ryan.airlinecheckin.model.events.DeleteLoginEvent;
+import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
+import com.tolsma.ryan.airlinecheckin.services.requests.SouthwestValidityRequest;
 
 import javax.inject.Inject;
 
@@ -26,12 +29,13 @@ import butterknife.ButterKnife;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class LoginListFragment extends Fragment {
+public class LoginListFragment extends Fragment implements ExtendedUI {
 
     public static final String TAG=LoginListFragment.class.getSimpleName();
     // @Bind(R.id.fragment_login_list_view)
     public static ListView loginListView;
     static LoginListAdapter listAdapter;
+    private static boolean isAlive = false;
     public RelativeLayout loginListContainer;
     @Inject
     SouthwestLogins logins;
@@ -39,6 +43,8 @@ public class LoginListFragment extends Fragment {
     Context ctx;
     //@Inject
     FragmentManager fragmentManager;
+    @Inject
+    Bus eventBus;
 
 
 
@@ -61,8 +67,9 @@ public class LoginListFragment extends Fragment {
         CleanupApplication.getAppComponent().inject(this);
         CleanupApplication.getActivityComponent().inject(this);
 
+
         fragmentManager = CleanupApplication.getActivityComponent().fragmentManager();
-        ctx = CleanupApplication.getActivityComponent().mainActivity();
+        ctx = CleanupApplication.getAppComponent().context();
         //    CleanupApplication.getActivityComponent().inject(this);
 
         loginListContainer= (RelativeLayout) inflater.inflate(R.layout.fragment_login_list, container, false);
@@ -83,6 +90,7 @@ public class LoginListFragment extends Fragment {
                 login.setAlarm(ctx);
                 logins.sort((one, two) -> one.getLoginEvent().getFlightDate()
                         .compareTo(two.getLoginEvent().getFlightDate()));
+
             }
 
             ((BaseAdapter) loginListView.getAdapter()).notifyDataSetChanged();
@@ -94,12 +102,41 @@ public class LoginListFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        isAlive = true;
+        eventBus.register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isAlive = true;
+        eventBus.unregister(this);
+    }
+
+    @Override
+    public boolean isAlive() {
+        return isAlive;
+    }
+
     public ListView getListView() {
         return loginListView;
     }
 
     public LoginListAdapter getLoginListAdapter() {
         return listAdapter;
+    }
+
+    @Subscribe
+    public void deleteLoginEvent(DeleteLoginEvent dle) {
+        if (logins == null) return;
+        else {
+            logins.remove(logins.indexOf(dle.getPrimary()));
+
+        }
+
     }
 
 }

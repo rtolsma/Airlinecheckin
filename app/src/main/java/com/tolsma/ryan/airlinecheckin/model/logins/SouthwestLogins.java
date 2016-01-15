@@ -1,4 +1,4 @@
-package com.tolsma.ryan.airlinecheckin.model;
+package com.tolsma.ryan.airlinecheckin.model.logins;
 
 import android.content.Context;
 import android.util.Log;
@@ -75,6 +75,7 @@ public class SouthwestLogins {
         SouthwestLogin sl = get(index);
         sl.cancelAlarm(ctx);
         deleteFromRealm(sl);
+        loginList.remove(index);
         return true;
     }
 

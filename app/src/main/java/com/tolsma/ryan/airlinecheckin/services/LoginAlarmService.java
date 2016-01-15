@@ -9,8 +9,9 @@ import android.widget.Toast;
 
 import com.tolsma.ryan.airlinecheckin.CleanupApplication;
 import com.tolsma.ryan.airlinecheckin.MainActivity;
-import com.tolsma.ryan.airlinecheckin.model.SouthwestLogin;
+import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogin;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
+import com.tolsma.ryan.airlinecheckin.services.requests.SouthwestValidityRequest;
 import com.tolsma.ryan.airlinecheckin.services.retrofit.SouthwestAPI;
 import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
 import com.tolsma.ryan.airlinecheckin.utils.RetrofitUtils;
@@ -22,7 +23,7 @@ import io.realm.Realm;
 
 public class LoginAlarmService extends IntentService {
 
-    @Inject
+    //@Inject
     Realm realm;
     SouthwestAPI api;
     @Inject
@@ -47,7 +48,8 @@ public class LoginAlarmService extends IntentService {
     public void onHandleIntent(Intent intent) {
         init();
         CleanupApplication.getAppComponent().inject(this);
-        ma = CleanupApplication.getActivityComponent().mainActivity();
+        realm = Realm.getInstance(this);
+        // ma = CleanupApplication.getActivityComponent().mainActivity();
         api = RetrofitUtils.createRetrofitService(SouthwestAPI.class, ConstantsConfig.SOUTHWEST_API);
         //Get the corresponding request from Realm, and deletes it from storage
         southwestLogin = new SouthwestLogin(realm.where(SouthwestLoginEvent.class)
@@ -59,39 +61,21 @@ public class LoginAlarmService extends IntentService {
         sendToast("Starting IntentService with confirmation code: "
                 + southwestLogin.getConfirmationCode(), Toast.LENGTH_SHORT);
 
-
+        for (int i = 0; i < 5; i++) {
         //TODO change ! for debugging
         if (!SouthwestValidityRequest.isLoginValid(southwestLogin)) {
             //The login is valid
             //Can't use dagger because it may not be instantiated with MainActivity setActivityComponents
             SouthwestAPI api = RetrofitUtils.createRetrofitService(SouthwestAPI.class, ConstantsConfig.SOUTHWEST_API);
 
-            deleteLogin();
-
+        }
 
         }
 
 
     }
 
-    @DebugLog
-    public boolean deleteLogin() {
-        //Delete the Login from the UI if its running currently, since no longer needed
-        realm.beginTransaction();
-        realm.where(SouthwestLoginEvent.class).equalTo(ConstantsConfig.SOUTHWEST_CONFIRMATION_CODE,
-                southwestLogin.getConfirmationCode()).findAll().remove(0);
-        realm.commitTransaction();
 
-        if (ma != null && ma.getLoginListFragment() != null) {
-
-            ma.getLoginListFragment().getLoginListAdapter().remove(southwestLogin);
-            ma.getLoginListFragment().getLoginListAdapter().notifyDataSetChanged();
-
-            return true;
-        }
-        //indicates UI not active
-        return false;
-    }
 
     public void sendToast(String message, int length) {
 

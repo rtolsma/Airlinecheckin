@@ -2,7 +2,7 @@ package com.tolsma.ryan.airlinecheckin.modules;
 
 import android.content.Context;
 
-import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
+import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
 
 import javax.inject.Singleton;

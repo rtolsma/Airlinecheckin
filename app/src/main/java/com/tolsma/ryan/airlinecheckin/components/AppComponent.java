@@ -6,9 +6,10 @@ import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.squareup.otto.Bus;
 import com.tolsma.ryan.airlinecheckin.MainActivity;
 import com.tolsma.ryan.airlinecheckin.adapters.LoginListAdapter;
-import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
+import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.modules.AppModule;
 import com.tolsma.ryan.airlinecheckin.modules.LoginModule;
 import com.tolsma.ryan.airlinecheckin.services.LoginAlarmService;
@@ -55,4 +56,6 @@ public interface AppComponent {
     NotificationManagerCompat notificationManager();
 
     NotificationCompat.Builder notificationBuilder();
+
+    Bus eventBus();
 }

@@ -1,6 +1,7 @@
 package com.tolsma.ryan.airlinecheckin.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +10,10 @@ import android.widget.TextView;
 
 import com.tolsma.ryan.airlinecheckin.CleanupApplication;
 import com.tolsma.ryan.airlinecheckin.R;
-import com.tolsma.ryan.airlinecheckin.model.SouthwestLogin;
-import com.tolsma.ryan.airlinecheckin.model.SouthwestLogins;
+import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogin;
+import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
+import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
 
 import javax.inject.Inject;
 
@@ -49,11 +51,20 @@ public class LoginListAdapter extends BaseAdapter {
             loginViewHolder.setNames((TextView) v.findViewById(R.id.fragment_login_list_item_name));
             loginViewHolder.setDate((TextView) v.findViewById(R.id.fragment_login_list_item_date));
             loginViewHolder.setConfirmationNumber((TextView) v.findViewById(R.id.fragment_login_list_item_confirmation));
+            loginViewHolder.setCardView((CardView) v.findViewById(R.id.fragment_login_list_item_cardview));
             v.setTag(loginViewHolder);
             loginViewHolder.getAirline().setText("Southwest Airlines");
             loginViewHolder.getNames().setText(temp.getFirstName() + " " + temp.getLastName());
             loginViewHolder.getDate().setText(temp.getFlightDate().toString());
-            loginViewHolder.getConfirmationNumber().setText( temp.getConfirmationCode() );
+            loginViewHolder.getConfirmationNumber().setText(temp.getConfirmationCode());
+
+            loginViewHolder.getCardView().setMaxCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
+            loginViewHolder.getCardView().setCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
+            loginViewHolder.getCardView().setRadius(ConstantsConfig.CARDVIEW_RADIUS);
+            loginViewHolder.getCardView().setUseCompatPadding(true);
+
+
+
             convertView=v;
         } else {
             loginViewHolder= (LoginViewHolder) convertView.getTag();
@@ -61,7 +72,10 @@ public class LoginListAdapter extends BaseAdapter {
             loginViewHolder.getNames().setText(temp.getFirstName() + " " + temp.getLastName());
             loginViewHolder.getDate().setText(temp.getFlightDate().toString());
             loginViewHolder.getConfirmationNumber().setText( temp.getConfirmationCode() );
-
+            loginViewHolder.getCardView().setMaxCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
+            loginViewHolder.getCardView().setCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
+            loginViewHolder.getCardView().setRadius(ConstantsConfig.CARDVIEW_RADIUS);
+            loginViewHolder.getCardView().setUseCompatPadding(true);
 
 
 
@@ -107,8 +121,17 @@ public class LoginListAdapter extends BaseAdapter {
         TextView date;
         TextView confirmationNumber;
         TextView airline;
+        CardView cardView;
 
         public LoginViewHolder() {}
+
+        public CardView getCardView() {
+            return cardView;
+        }
+
+        public void setCardView(CardView cardView) {
+            this.cardView = cardView;
+        }
 
         public TextView getNames() {
             return names;

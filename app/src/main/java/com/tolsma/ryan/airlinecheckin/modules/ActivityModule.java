@@ -31,6 +31,8 @@ public class ActivityModule {
     @Provides
     @AppModule.PerActivity
     public MainActivity provideMainActivity() {
+        if (!ma.isAlive()) return (ma = null);
+
         return this.ma;
     }
 
@@ -52,5 +54,6 @@ public class ActivityModule {
     public FragmentTransaction provideFragmentTransaction(FragmentManager fm) {
         return fm.beginTransaction();
     }
+
 
 }
