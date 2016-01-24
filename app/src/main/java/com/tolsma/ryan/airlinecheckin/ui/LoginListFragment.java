@@ -1,9 +1,9 @@
 package com.tolsma.ryan.airlinecheckin.ui;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +78,9 @@ public class LoginListFragment extends Fragment implements ExtendedUI {
         listAdapter = new LoginListAdapter(logins);
         loginListView.setAdapter(listAdapter);
         loginListView.setOnItemClickListener(itemListener);
+        //removes the line thing in between list items
+        loginListView.setDivider(null);
+        loginListView.setDividerHeight(0);
         return loginListContainer;
     }
 

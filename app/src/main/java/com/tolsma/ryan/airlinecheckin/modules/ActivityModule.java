@@ -1,8 +1,8 @@
 package com.tolsma.ryan.airlinecheckin.modules;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 
 import com.tolsma.ryan.airlinecheckin.MainActivity;
@@ -40,7 +40,7 @@ public class ActivityModule {
     @AppModule.PerActivity
     public FragmentManager provideFragmentManager() {
         return
-                ma.getSupportFragmentManager();
+                ma.getFragmentManager();
     }
 
     /*   @Provides

@@ -3,7 +3,32 @@
 				  android:layout_width="match_parent"
 				  android:layout_height="match_parent"
 				  android:orientation="vertical"
+
 	>
 
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="@string/text_boolean_preference"
+		android:title="@string/text_boolean_preference"
+		/>
+
+	<EditTextPreference
+		android:dependency="@string/text_boolean_preference"
+		android:key="@string/text_number_preference"
+		android:title="Phone Number"
+		/>
+
+
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="@string/email_boolean_preference"
+		android:title="@string/email_boolean_preference"
+		/>
+
+	<EditTextPreference
+		android:dependency="@string/email_boolean_preference"
+		android:key="@string/email_address_preference"
+		android:title="Email Address"
+		/>
 
 </PreferenceScreen>

@@ -1,7 +1,7 @@
 package com.tolsma.ryan.airlinecheckin.components;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.view.LayoutInflater;
 
 import com.tolsma.ryan.airlinecheckin.MainActivity;

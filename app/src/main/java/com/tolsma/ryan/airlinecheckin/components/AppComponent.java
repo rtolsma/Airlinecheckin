@@ -8,6 +8,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.squareup.otto.Bus;
 import com.tolsma.ryan.airlinecheckin.MainActivity;
+import com.tolsma.ryan.airlinecheckin.SettingsFragment;
 import com.tolsma.ryan.airlinecheckin.adapters.LoginListAdapter;
 import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.modules.AppModule;
@@ -42,6 +43,8 @@ public interface AppComponent {
     void inject(LoginAlarmService las);
 
     void inject(SouthwestLogins swls);
+
+    void inject(SettingsFragment sf);
 
     SouthwestLogins swLogins();
 

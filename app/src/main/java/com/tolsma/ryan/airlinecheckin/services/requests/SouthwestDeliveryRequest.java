@@ -16,7 +16,6 @@ import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
 import java.io.IOException;
 
 import retrofit.Call;
-import retrofit.Response;
 
 /**
  * Created by ryan on 1/13/16.
@@ -31,12 +30,7 @@ public class SouthwestDeliveryRequest implements Runnable {
         this.isEmail = isEmail;
     }
 
-    @Override
-    public void run() {
-        isCheckedIn();
-    }
-
-    public boolean isCheckedIn() {
+    public static boolean isDeliveredIn(String data, boolean isEmail) {
         AppComponent dap = CleanupApplication.getAppComponent();
         Context ctx = dap.context();
         Bus eventBus = dap.eventBus();
@@ -57,7 +51,7 @@ public class SouthwestDeliveryRequest implements Runnable {
                 responseBodyCall = dap.southwestAPI().sendEmailDelivery(
                         ConstantsConfig.SOUTHWEST_OPTION_EMAIL, data,
                         ConstantsConfig.SOUTHWEST_BOOK_NOW);
-                responseBody = ((Response<ResponseBody>) responseBodyCall.execute()).body();
+                responseBody = responseBodyCall.execute().body();
                 response = responseBody.string();
 
                 /*
@@ -120,6 +114,11 @@ public class SouthwestDeliveryRequest implements Runnable {
             return false;
         }
 
+    }
+
+    @Override
+    public void run() {
+        isDeliveredIn(data, isEmail);
     }
 
 }

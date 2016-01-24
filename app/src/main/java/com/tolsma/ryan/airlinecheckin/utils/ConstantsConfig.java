@@ -8,7 +8,7 @@ public class ConstantsConfig {
     public final static String LOGIN_INTENT_ID = "ID";
     public final static String SOUTHWEST_AIRLINES = "Southwest Airlines";
     public final static String SOUTHWEST_API = "https://www.southwest.com";
-
+    public final static long DAY_MILLLIS = 24 * 60 * 60 * 1000;
 
     /*
     These are the error screens that southwest provides when info
@@ -53,7 +53,11 @@ public class ConstantsConfig {
     /*
     View Constants
      */
-    public static final float CARDVIEW_ELEVATION = 40.0f;
+    public static final float CARDVIEW_ELEVATION = 50.0f;
     // public static final float CARDVIEW_MAX_ELEVATION=10.0f;
-    public static final float CARDVIEW_RADIUS = 25.0f;
+    public static final float CARDVIEW_RADIUS = 30.0f;
+
+    public static final String DATE_TITLE = "Date: ";
+    public static final String NAME_TITLE = "Name: ";
+    public static final String CONFIRMATION_CODE_TITLE = "Confirmation: ";
 }

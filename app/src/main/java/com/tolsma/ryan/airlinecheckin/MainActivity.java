@@ -1,10 +1,10 @@
 package com.tolsma.ryan.airlinecheckin;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -31,7 +31,10 @@ public class MainActivity extends AppCompatActivity implements ExtendedUI {
     private static boolean isAlive = false;
 
     LoginListFragment loginListFragment;
-    FragmentTransaction ft;
+    SettingsFragment settingsFragment;
+
+    FragmentManager fm;
+
     @Inject
     Realm realm;
     @Inject
@@ -46,8 +49,8 @@ public class MainActivity extends AppCompatActivity implements ExtendedUI {
 
         CleanupApplication.setActivityComponents(this);
         CleanupApplication.getAppComponent().inject(this);
-        ft = CleanupApplication.getActivityComponent().fragmentTransaction();
         // CleanupApplication.getActivityComponent().inject(this);
+        fm = CleanupApplication.getActivityComponent().fragmentManager();
         logins = CleanupApplication.getAppComponent().swLogins();
 
         setContentView(R.layout.activity_main);
@@ -98,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements ExtendedUI {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            showSettingsFragment();
             return true;
         }
 
@@ -114,11 +118,18 @@ public class MainActivity extends AppCompatActivity implements ExtendedUI {
 
     }
 
+    public void showSettingsFragment() {
+        if (settingsFragment == null) settingsFragment = new SettingsFragment();
+
+        fm.beginTransaction().replace(R.id.activity_main_fragment_container, settingsFragment, SettingsFragment.TAG)
+                .addToBackStack(SettingsFragment.TAG).commit();
+
+    }
     public void showLoginList() {
        if(loginListFragment==null)
         loginListFragment=new LoginListFragment();
 
-        ft.add(R.id.activity_main_fragment_container, loginListFragment, loginListFragment.TAG)
+        fm.beginTransaction().replace(R.id.activity_main_fragment_container, loginListFragment, LoginListFragment.TAG)
             .commit();
     }
 
@@ -133,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements ExtendedUI {
 
     @Override
     public boolean isAlive() {
-        return this.isAlive;
+        return isAlive;
     }
 
     /*

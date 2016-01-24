@@ -18,6 +18,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
+import hugo.weaving.DebugLog;
 import retrofit.Call;
 
 /**
@@ -29,12 +30,8 @@ public class SouthwestCheckinRequest implements Runnable {
     public SouthwestCheckinRequest() {
     }
 
-    @Override
-    public void run() {
-        this.isCheckedIn();
-    }
-
-    public boolean isCheckedIn() {
+    @DebugLog
+    public static boolean isCheckedIn() {
         AppComponent dap = CleanupApplication.getAppComponent();
         Context ctx = dap.context();
         NotificationEvent ne = new NotificationEvent();
@@ -78,6 +75,11 @@ public class SouthwestCheckinRequest implements Runnable {
         }
 
 
+    }
+
+    @Override
+    public void run() {
+        isCheckedIn();
     }
 
 }

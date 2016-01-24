@@ -2,13 +2,26 @@
     <string name="app_name">AirlineCheckIn</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="dialog_submit">Submit</string>
+
+
+	<string name="dialog_submit">Submit</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_first">First Name</string>
     <string name="dialog_last">Last Name</string>
     <string name="dialog_confirmation">Confirmation Code</string>
 <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 	<string name="dialog_save">Save</string>
 	<string name="dialog_delete">Delete</string>
+
+	<string name="dialog_name_title">Name:</string>
+	<string name="dialog_date_title">Date:</string>
+	<string name="dialog_confirmation_code_title">Confirmation:</string>
+
+	<!-- Keys for the Preferences and title, they are the same-->
+	<string name="text_boolean_preference">Receive Boarding Pass Text</string>
+	<string name="text_number_preference">Number To Receive Boarding Pass</string>
+	<string name="email_boolean_preference">Receive Boarding Pass Email</string>
+	<string name="email_address_preference">Address To Receive Boarding Pass</string>
+	<!---Titles for the preferences-->
 </resources>

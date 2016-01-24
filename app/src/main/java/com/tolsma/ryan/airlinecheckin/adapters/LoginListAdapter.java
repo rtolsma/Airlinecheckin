@@ -53,10 +53,13 @@ public class LoginListAdapter extends BaseAdapter {
             loginViewHolder.setConfirmationNumber((TextView) v.findViewById(R.id.fragment_login_list_item_confirmation));
             loginViewHolder.setCardView((CardView) v.findViewById(R.id.fragment_login_list_item_cardview));
             v.setTag(loginViewHolder);
-            loginViewHolder.getAirline().setText("Southwest Airlines");
-            loginViewHolder.getNames().setText(temp.getFirstName() + " " + temp.getLastName());
+            loginViewHolder.getAirline().setText(ConstantsConfig.SOUTHWEST_AIRLINES);
+            loginViewHolder.getNames().setText(temp.getFirstName()
+                    + " " + temp.getLastName());
+
             loginViewHolder.getDate().setText(temp.getFlightDate().toString());
-            loginViewHolder.getConfirmationNumber().setText(temp.getConfirmationCode());
+            loginViewHolder.getConfirmationNumber()
+                    .setText(temp.getConfirmationCode());
 
             loginViewHolder.getCardView().setMaxCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
             loginViewHolder.getCardView().setCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
@@ -68,10 +71,13 @@ public class LoginListAdapter extends BaseAdapter {
             convertView=v;
         } else {
             loginViewHolder= (LoginViewHolder) convertView.getTag();
-            loginViewHolder.getAirline().setText("Southwest Airlines");
-            loginViewHolder.getNames().setText(temp.getFirstName() + " " + temp.getLastName());
+            loginViewHolder.getAirline().setText(ConstantsConfig.SOUTHWEST_AIRLINES);
+            loginViewHolder.getNames().setText(temp.getFirstName()
+                    + " " + temp.getLastName());
+
             loginViewHolder.getDate().setText(temp.getFlightDate().toString());
-            loginViewHolder.getConfirmationNumber().setText( temp.getConfirmationCode() );
+            loginViewHolder.getConfirmationNumber()
+                    .setText(temp.getConfirmationCode());
             loginViewHolder.getCardView().setMaxCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
             loginViewHolder.getCardView().setCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
             loginViewHolder.getCardView().setRadius(ConstantsConfig.CARDVIEW_RADIUS);

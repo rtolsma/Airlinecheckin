@@ -2,11 +2,11 @@ package com.tolsma.ryan.airlinecheckin.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -96,12 +96,13 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedUI {
 
         if (mIsEdit && loginPosition >= 0) {
 
-            login= (SouthwestLogin) loginList.get(loginPosition);
+            login = loginList.get(loginPosition);
             Date flightDate = login.getLoginEvent().getFlightDate();
             Calendar cal= Calendar.getInstance();
             cal.setTime(flightDate);
             mDatePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH)
                     , cal.get(Calendar.DAY_OF_MONTH));
+            //Catch uses of newer and deprecated APIS for different build levels
         if(Build.VERSION.SDK_INT>=23) {
             mTimePicker.setHour(cal.get(Calendar.HOUR_OF_DAY));
             mTimePicker.setMinute(cal.get(Calendar.MINUTE));
@@ -115,13 +116,18 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedUI {
             mConfirmationCode.setText(login.getConfirmationCode());
 
             dialogBuilder.setPositiveButton(R.string.dialog_save, null)
-                    .setNegativeButton(R.string.dialog_delete, null);
+                    .setNegativeButton(R.string.dialog_delete, null)
+                    .setNeutralButton(R.string.dialog_cancel, null);
 
 
         } else {
 
             dialogBuilder.setPositiveButton(R.string.dialog_submit, null).
                     setNegativeButton(R.string.dialog_cancel, null); //TODO);
+            //+1  Set day to tomorrow, since that is most likely when they will look for flights
+            Calendar cal = Calendar.getInstance();
+            mDatePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DAY_OF_MONTH));
         }
 
         AlertDialog alertDialog = dialogBuilder.create();
@@ -188,6 +194,8 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedUI {
                         alertDialog.cancel();
 
                         break;
+                    case AlertDialog.BUTTON_NEUTRAL:
+                        alertDialog.cancel();
                     default: //shouldn't happen
                 }
             }
@@ -253,7 +261,7 @@ public class LoginDialogFragment extends DialogFragment implements ExtendedUI {
                         tp.getCurrentHour(), tp.getCurrentMinute());
 
             cal.set(Calendar.SECOND, 0);
-            return new Date(cal.getTimeInMillis() - cal.getTimeInMillis() % 10000); //Don't count the seconds
+            return new Date(cal.getTimeInMillis()); //Don't count the seconds
         }
         return null;
 

@@ -49,7 +49,7 @@ public class SouthwestLogin {
                 i.putExtra(ConstantsConfig.LOGIN_INTENT_ID, new String(getConfirmationCode()));
                 mAlarmIntent = PendingIntent.getService(ctx, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                long timeToAlarm = getLoginEvent().getFlightDate().getTime() - (24 * 60 * 60 * 1000) - (1 * 250); //One day+quarter sec. before flight
+                long timeToAlarm = getLoginEvent().getFlightDate().getTime() - (ConstantsConfig.DAY_MILLLIS) - (50); //One day+1/10 sec. before flight
                 if (Build.VERSION.SDK_INT >= 23)
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeToAlarm, mAlarmIntent);
                 else if (Build.VERSION.SDK_INT >= 19)
