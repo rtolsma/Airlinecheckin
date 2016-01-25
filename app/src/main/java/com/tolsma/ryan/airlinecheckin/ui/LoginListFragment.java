@@ -32,10 +32,10 @@ import butterknife.ButterKnife;
 public class LoginListFragment extends Fragment implements ExtendedUI {
 
     public static final String TAG=LoginListFragment.class.getSimpleName();
-    // @Bind(R.id.fragment_login_list_view)
-    public static ListView loginListView;
-    static LoginListAdapter listAdapter;
     private static boolean isAlive = false;
+    // @Bind(R.id.fragment_login_list_view)
+    public ListView loginListView;
+    public LoginListAdapter listAdapter;
     public RelativeLayout loginListContainer;
     @Inject
     SouthwestLogins logins;

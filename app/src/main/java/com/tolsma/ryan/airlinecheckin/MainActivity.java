@@ -1,6 +1,7 @@
 package com.tolsma.ryan.airlinecheckin;
 
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -118,10 +119,24 @@ public class MainActivity extends AppCompatActivity implements ExtendedUI {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if (settingsFragment != null && settingsFragment.isVisible()) {
+            // fm.beginTransaction().replace(R.id.activity_main_fragment_container,
+            //    loginListFragment, loginListFragment.TAG).commit();
+            fm.popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     public void showSettingsFragment() {
         if (settingsFragment == null) settingsFragment = new SettingsFragment();
 
-        fm.beginTransaction().replace(R.id.activity_main_fragment_container, settingsFragment, SettingsFragment.TAG)
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out);
+
+        ft.replace(R.id.activity_main_fragment_container, settingsFragment, SettingsFragment.TAG)
                 .addToBackStack(SettingsFragment.TAG).commit();
 
     }
@@ -129,7 +144,8 @@ public class MainActivity extends AppCompatActivity implements ExtendedUI {
        if(loginListFragment==null)
         loginListFragment=new LoginListFragment();
 
-        fm.beginTransaction().replace(R.id.activity_main_fragment_container, loginListFragment, LoginListFragment.TAG)
+        fm.beginTransaction().replace(R.id.activity_main_fragment_container,
+                loginListFragment, LoginListFragment.TAG)
             .commit();
     }
 

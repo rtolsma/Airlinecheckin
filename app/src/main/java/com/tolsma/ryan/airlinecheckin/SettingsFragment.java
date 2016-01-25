@@ -17,6 +17,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onCreatePreferences(Bundle savedInstanceState, String idk) {
         addPreferencesFromResource(R.xml.fragment_settings);
         SharedPreferences sp = getPreferenceManager().getSharedPreferences();
+        //Hacky way to reuse code
+        onSharedPreferenceChanged(sp, getString(R.string.text_number_preference));
+        onSharedPreferenceChanged(sp, getString(R.string.email_address_preference));
+
        /* String temp;
         if( (temp=sp.getString( getString(R.string.text_number_preference),"" )).equals("")) {
             sp.edit().putString(getString(R.string.text_number_preference), "Email Address");

@@ -88,7 +88,7 @@ public class SouthwestDeliveryRequest implements Runnable {
                 if (response.contains(ConstantsConfig.SOUTHWEST_PHONE_BLANK_ERROR)
                         || response.contains(ConstantsConfig.SOUTHWEST_PHONE_INCOMPLETE_ERROR)) {
 
-                    ne.setTitle("Southwest Phone Number Format Errror");
+                    ne.setTitle("Southwest Phone Number Format Error");
                     ne.setMessage("The phone number that the boarding pass was supposed to be " +
                             "texted to was incorrectly formatted. Please go to the Southwest website" +
                             "in order to download your boarding pass. For future flights, please" +
