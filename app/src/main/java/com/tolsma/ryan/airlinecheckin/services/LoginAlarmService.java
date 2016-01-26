@@ -12,6 +12,7 @@ import com.tolsma.ryan.airlinecheckin.MainActivity;
 import com.tolsma.ryan.airlinecheckin.R;
 import com.tolsma.ryan.airlinecheckin.model.events.ToastEvent;
 import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogin;
+import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
 import com.tolsma.ryan.airlinecheckin.services.requests.SouthwestCheckinRequest;
 import com.tolsma.ryan.airlinecheckin.services.requests.SouthwestDeliveryRequest;
@@ -89,6 +90,9 @@ public class LoginAlarmService extends IntentService {
                     }
 
                     if (emailDelivered || textDelivered) {
+                        //On successful delivery, remove the login from the view
+                        SouthwestLogins logins = CleanupApplication.getAppComponent().swLogins();
+                        logins.remove(logins.indexOf(southwestLogin));
                         return;
                     }
 

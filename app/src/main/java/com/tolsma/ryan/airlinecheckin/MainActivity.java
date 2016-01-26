@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements ExtendedUI {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //On startup, open with the login list showing
+        if (!(settingsFragment != null && settingsFragment.isVisible()))
         showLoginList();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
