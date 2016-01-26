@@ -5,4 +5,5 @@
 	<color name="colorAccent">#3F51B5</color>
 	<color name="login_list_item_text">#000000</color>
 	<color name="cardview_title_background">#64b5f6</color>
+	<color name="cardview_title_background_expired">#ff5252</color>
 </resources>

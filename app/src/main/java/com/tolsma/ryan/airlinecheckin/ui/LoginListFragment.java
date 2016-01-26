@@ -18,6 +18,7 @@ import com.tolsma.ryan.airlinecheckin.CleanupApplication;
 import com.tolsma.ryan.airlinecheckin.R;
 import com.tolsma.ryan.airlinecheckin.adapters.LoginListAdapter;
 import com.tolsma.ryan.airlinecheckin.model.events.DeleteLoginEvent;
+import com.tolsma.ryan.airlinecheckin.model.events.UpdateLoginListEvent;
 import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.services.requests.SouthwestValidityRequest;
 
@@ -137,9 +138,14 @@ public class LoginListFragment extends Fragment implements ExtendedUI {
         if (logins == null) return;
         else {
             logins.remove(logins.indexOf(dle.getPrimary()));
+            getActivity().runOnUiThread(() -> listAdapter.notifyDataSetChanged());
 
         }
+    }
 
+    @Subscribe
+    public void updateLoginList(UpdateLoginListEvent event) {
+        getActivity().runOnUiThread(() -> listAdapter.notifyDataSetChanged());
     }
 
 }

@@ -1,6 +1,7 @@
 package com.tolsma.ryan.airlinecheckin.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogin;
 import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
 import com.tolsma.ryan.airlinecheckin.utils.ConstantsConfig;
+
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -46,42 +49,17 @@ public class LoginListAdapter extends BaseAdapter {
         if (convertView == null) {
             v=layoutInflater.inflate(R.layout.fragment_login_list_item, parent, false);
             //Create viewholder to decrease calls to findViewById by holding references to objects
-            loginViewHolder=new LoginViewHolder();
-            loginViewHolder.setAirline((TextView) v.findViewById(R.id.fragment_login_list_item_title));
-            loginViewHolder.setNames((TextView) v.findViewById(R.id.fragment_login_list_item_name));
-            loginViewHolder.setDate((TextView) v.findViewById(R.id.fragment_login_list_item_date));
-            loginViewHolder.setConfirmationNumber((TextView) v.findViewById(R.id.fragment_login_list_item_confirmation));
-            loginViewHolder.setCardView((CardView) v.findViewById(R.id.fragment_login_list_item_cardview));
-            v.setTag(loginViewHolder);
-            loginViewHolder.getAirline().setText(ConstantsConfig.SOUTHWEST_AIRLINES);
-            loginViewHolder.getNames().setText(temp.getFirstName()
-                    + " " + temp.getLastName());
+            loginViewHolder = createViewHolder(v);
 
-            loginViewHolder.getDate().setText(temp.getFlightDate().toString());
-            loginViewHolder.getConfirmationNumber()
-                    .setText(temp.getConfirmationCode());
 
-            loginViewHolder.getCardView().setMaxCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
-            loginViewHolder.getCardView().setCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
-            loginViewHolder.getCardView().setRadius(ConstantsConfig.CARDVIEW_RADIUS);
-            loginViewHolder.getCardView().setUseCompatPadding(true);
+            updateView(temp, loginViewHolder);
 
 
 
             convertView=v;
         } else {
             loginViewHolder= (LoginViewHolder) convertView.getTag();
-            loginViewHolder.getAirline().setText(ConstantsConfig.SOUTHWEST_AIRLINES);
-            loginViewHolder.getNames().setText(temp.getFirstName()
-                    + " " + temp.getLastName());
-
-            loginViewHolder.getDate().setText(temp.getFlightDate().toString());
-            loginViewHolder.getConfirmationNumber()
-                    .setText(temp.getConfirmationCode());
-            loginViewHolder.getCardView().setMaxCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
-            loginViewHolder.getCardView().setCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
-            loginViewHolder.getCardView().setRadius(ConstantsConfig.CARDVIEW_RADIUS);
-            loginViewHolder.getCardView().setUseCompatPadding(true);
+            updateView(temp, loginViewHolder);
 
 
 
@@ -89,6 +67,38 @@ public class LoginListAdapter extends BaseAdapter {
 
 
         return convertView;
+    }
+
+    public void updateView(SouthwestLoginEvent temp, LoginViewHolder loginViewHolder) {
+        loginViewHolder.getAirline().setText(ConstantsConfig.SOUTHWEST_AIRLINES);
+        //SETS COLOR BASED OFF WHETHER DATE IS EXPIRED
+        if (temp.getFlightDate().getTime() < new Date().getTime() + ConstantsConfig.DAY_MILLLIS) {
+            loginViewHolder.getDate()
+                    .setTextColor(ctx.getResources().getColor(R.color.cardview_title_background_expired));
+        } else {
+            loginViewHolder.getDate().setTextColor(Color.BLACK);
+        }
+
+        loginViewHolder.getNames().setText(temp.getFirstName()
+                + " " + temp.getLastName());
+        loginViewHolder.getDate().setText(temp.getFlightDate().toString());
+        loginViewHolder.getConfirmationNumber()
+                .setText(temp.getConfirmationCode());
+        loginViewHolder.getCardView().setMaxCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
+        loginViewHolder.getCardView().setCardElevation(ConstantsConfig.CARDVIEW_ELEVATION);
+        loginViewHolder.getCardView().setRadius(ConstantsConfig.CARDVIEW_RADIUS);
+        loginViewHolder.getCardView().setUseCompatPadding(true);
+    }
+
+    public LoginViewHolder createViewHolder(View v) {
+        LoginViewHolder loginViewHolder = new LoginViewHolder();
+        loginViewHolder.setAirline((TextView) v.findViewById(R.id.fragment_login_list_item_title));
+        loginViewHolder.setNames((TextView) v.findViewById(R.id.fragment_login_list_item_name));
+        loginViewHolder.setDate((TextView) v.findViewById(R.id.fragment_login_list_item_date));
+        loginViewHolder.setConfirmationNumber((TextView) v.findViewById(R.id.fragment_login_list_item_confirmation));
+        loginViewHolder.setCardView((CardView) v.findViewById(R.id.fragment_login_list_item_cardview));
+        v.setTag(loginViewHolder);
+        return loginViewHolder;
     }
 
     public void remove(String confirmationCode) {

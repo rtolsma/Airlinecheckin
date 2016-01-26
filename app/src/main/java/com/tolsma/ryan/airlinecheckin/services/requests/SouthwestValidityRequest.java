@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.squareup.okhttp.ResponseBody;
 import com.squareup.otto.Bus;
 import com.tolsma.ryan.airlinecheckin.CleanupApplication;
@@ -105,6 +106,7 @@ public class SouthwestValidityRequest implements Runnable {
 
 
         } catch (IOException e) {
+            Crashlytics.logException(e);
             ne.setTitle("Connection Issue");
             ne.setMessage("There was an error in connecting to the internet to " +
                     "verify the validity of the reservation with confirmation code " +
@@ -140,7 +142,7 @@ public class SouthwestValidityRequest implements Runnable {
     //static Runnable uiWorker;
     public void run() {
 
-        this.isLoginValid(sl);
+        isLoginValid(sl);
 
     }
 

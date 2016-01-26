@@ -3,8 +3,6 @@ package com.tolsma.ryan.airlinecheckin;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +13,7 @@ import android.widget.Toast;
 
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+import com.tolsma.ryan.airlinecheckin.model.events.ActivityDeletedEvent;
 import com.tolsma.ryan.airlinecheckin.model.events.ToastEvent;
 import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogin;
 import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements ExtendedUI {
 
             RealmUtils.saveToRealm(this, l.getLoginEvent());
         }
-
+        eventBus.post(new ActivityDeletedEvent());
     }
 
     @Override
@@ -170,9 +169,8 @@ public class MainActivity extends AppCompatActivity implements ExtendedUI {
 
     @Subscribe
     public void deliverToast(ToastEvent te) {
-        //To be usable by background threads
-        Handler h = new Handler(Looper.getMainLooper());
-        h.post(() ->
+        //To be used on background threads to make toasts
+        runOnUiThread(() ->
                         Toast.makeText(this, te.getMessage(), te.getLength()).show()
         );
     }

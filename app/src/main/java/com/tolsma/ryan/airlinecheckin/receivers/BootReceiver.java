@@ -24,7 +24,7 @@ public class BootReceiver extends BroadcastReceiver {
         long now = System.currentTimeMillis();
         for (int i = 0; i < logins.size(); i++) {
 
-            if (logins.get(i).getLoginEvent().getFlightDate().getTime() > now) {
+            if (logins.get(i).getLoginEvent().getFlightDate().getTime() < now) {
                 //logins.remove(i);
             } else {
 

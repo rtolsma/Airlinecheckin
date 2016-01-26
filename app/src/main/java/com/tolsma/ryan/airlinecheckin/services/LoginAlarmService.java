@@ -11,6 +11,7 @@ import com.tolsma.ryan.airlinecheckin.CleanupApplication;
 import com.tolsma.ryan.airlinecheckin.MainActivity;
 import com.tolsma.ryan.airlinecheckin.R;
 import com.tolsma.ryan.airlinecheckin.model.events.ToastEvent;
+import com.tolsma.ryan.airlinecheckin.model.events.UpdateLoginListEvent;
 import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogin;
 import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
 import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
@@ -93,6 +94,7 @@ public class LoginAlarmService extends IntentService {
                         //On successful delivery, remove the login from the view
                         SouthwestLogins logins = CleanupApplication.getAppComponent().swLogins();
                         logins.remove(logins.indexOf(southwestLogin));
+                        eventBus.post(new UpdateLoginListEvent());
                         return;
                     }
 
@@ -100,8 +102,7 @@ public class LoginAlarmService extends IntentService {
         }
 
         }
-
-
+        eventBus.post(new UpdateLoginListEvent());
     }
 
 
