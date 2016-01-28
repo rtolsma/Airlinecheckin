@@ -14,7 +14,6 @@ import com.tolsma.ryan.airlinecheckin.model.events.ToastEvent;
 import com.tolsma.ryan.airlinecheckin.model.events.UpdateLoginListEvent;
 import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogin;
 import com.tolsma.ryan.airlinecheckin.model.logins.SouthwestLogins;
-import com.tolsma.ryan.airlinecheckin.model.realmobjects.SouthwestLoginEvent;
 import com.tolsma.ryan.airlinecheckin.services.requests.SouthwestCheckinRequest;
 import com.tolsma.ryan.airlinecheckin.services.requests.SouthwestDeliveryRequest;
 import com.tolsma.ryan.airlinecheckin.services.requests.SouthwestValidityRequest;
@@ -34,7 +33,6 @@ public class LoginAlarmService extends IntentService {
     SouthwestAPI api;
     @Inject
     NotificationManagerCompat notificationManager;
-    SouthwestLogin southwestLogin;
     MainActivity ma;
     @Inject
     Bus eventBus;
@@ -54,12 +52,21 @@ public class LoginAlarmService extends IntentService {
     @Override
     public void onHandleIntent(Intent intent) {
         CleanupApplication.getAppComponent().inject(this);
+        SouthwestLogin southwestLogin;
+        SouthwestLogins logins = CleanupApplication.getAppComponent().swLogins();
+
         realm = Realm.getInstance(this);
         api = RetrofitUtils.createRetrofitService(SouthwestAPI.class, ConstantsConfig.SOUTHWEST_API);
         //Get the corresponding request from Realm, and deletes it from storage
-        southwestLogin = new SouthwestLogin(realm.where(SouthwestLoginEvent.class)
+     /*   southwestLogin = new SouthwestLogin(realm.where(SouthwestLoginEvent.class)
                 .equalTo(ConstantsConfig.SOUTHWEST_CONFIRMATION_CODE,
                         intent.getStringExtra(ConstantsConfig.LOGIN_INTENT_ID)).findAll().get(0));
+        */
+        //Try non-realm based approach to keep sync between login objects and the static loginlist
+        southwestLogin = logins.get(logins
+                .indexOf(intent.getStringExtra(ConstantsConfig.LOGIN_INTENT_ID)));
+
+
 
         /*
         Some code to decipher what data is needed to be sent in the request
@@ -75,7 +82,7 @@ public class LoginAlarmService extends IntentService {
                 + southwestLogin.getConfirmationCode(), Toast.LENGTH_SHORT));
         //try a couple of times
         for (int i = 0; i < 2; i++) {
-            if (SouthwestValidityRequest.isLoginValid(southwestLogin)) {
+            if (SouthwestValidityRequest.isLoginValid(southwestLogin, i == 1)) {
             //The login is valid
                 //Can't use dagger because it may not be
                 // instantiated with MainActivity setActivityComponents
@@ -92,7 +99,6 @@ public class LoginAlarmService extends IntentService {
 
                     if (emailDelivered || textDelivered) {
                         //On successful delivery, remove the login from the view
-                        SouthwestLogins logins = CleanupApplication.getAppComponent().swLogins();
                         logins.remove(logins.indexOf(southwestLogin));
                         eventBus.post(new UpdateLoginListEvent());
                         return;

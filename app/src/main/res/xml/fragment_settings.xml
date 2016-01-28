@@ -14,6 +14,7 @@
 
 	<EditTextPreference
 		android:dependency="@string/text_boolean_preference"
+		android:inputType="number"
 		android:key="@string/text_number_preference"
 		android:title="Phone Number"
 		/>

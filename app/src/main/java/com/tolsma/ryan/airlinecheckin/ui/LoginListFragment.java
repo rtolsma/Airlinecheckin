@@ -94,13 +94,10 @@ public class LoginListFragment extends Fragment implements ExtendedUI {
                 login.setAlarm(ctx);
                 logins.sort((one, two) -> one.getLoginEvent().getFlightDate()
                         .compareTo(two.getLoginEvent().getFlightDate()));
-
+                ((BaseAdapter) loginListView.getAdapter()).notifyDataSetChanged();
+                if (login != null)
+                    new Thread(new SouthwestValidityRequest(login, false)).start();
             }
-
-            ((BaseAdapter) loginListView.getAdapter()).notifyDataSetChanged();
-            if (login != null)
-                new Thread(new SouthwestValidityRequest(login)).start();
-
 
         });
 

@@ -11,7 +11,7 @@ public class NotificationEvent {
     private String message;
     private String title;
     private int id;
-
+    private int priority = 1;
     private PendingIntent pi;
 
     public NotificationEvent(int id, String msg, String title, PendingIntent pi) {
@@ -23,6 +23,14 @@ public class NotificationEvent {
 
     public NotificationEvent() {
         this(-1, null, null, null);
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     public ToastEvent getToastEvent(int length) {

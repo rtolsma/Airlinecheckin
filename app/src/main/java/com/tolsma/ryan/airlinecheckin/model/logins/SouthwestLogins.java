@@ -1,6 +1,8 @@
 package com.tolsma.ryan.airlinecheckin.model.logins;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.tolsma.ryan.airlinecheckin.CleanupApplication;
@@ -85,7 +87,7 @@ public class SouthwestLogins {
 
     public int indexOf(SouthwestLogin sl) {
         for (int i = 0; i < getList().size(); i++) {
-            if (get(i).equals(sl)) return i;
+            if (get(i).getLoginEvent().equals(sl.getLoginEvent())) return i;
         }
         return -1;
     }
@@ -100,11 +102,28 @@ public class SouthwestLogins {
 
     }
 
+    /**
+     * @param sl A login to delete
+     *           <p>
+     *           This method employs a kind of hacky scheme
+     *           to ensure that every realm object is accessed
+     *           from the same thread. Since these objects are
+     *           only created from the main thread with the dialog
+     *           fragment, I used a handler to get these transactions
+     *           on the main thread also
+     */
     private void deleteFromRealm(SouthwestLogin sl) {
-        realm.beginTransaction();
-        realm.where(sl.getLoginEvent().getClass()).equalTo(ConstantsConfig.SOUTHWEST_CONFIRMATION_CODE
-                , sl.getConfirmationCode()).findAll().clear();
-        realm.commitTransaction();
+
+        new Handler(Looper.getMainLooper()).post(
+                () -> {
+                    realm.beginTransaction();
+                    realm.where(sl.getLoginEvent().getClass())
+                            .equalTo(ConstantsConfig.SOUTHWEST_CONFIRMATION_CODE
+                                    , sl.getConfirmationCode()).findAll().clear();
+                    realm.commitTransaction();
+                }
+        );
+
 
     }
 

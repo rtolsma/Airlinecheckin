@@ -31,17 +31,19 @@ import retrofit.Response;
 public class SouthwestValidityRequest implements Runnable {
 
     SouthwestLogin sl;
+    boolean notify;
 
-    public SouthwestValidityRequest(SouthwestLogin sl) {
+    public SouthwestValidityRequest(SouthwestLogin sl, boolean notify) {
         this.sl = sl;
+        this.notify = notify;
     }
 
     public SouthwestValidityRequest() {
-        this(null);
+        this(null, false);
     }
 
     @DebugLog
-    public static boolean isLoginValid(SouthwestLogin sl) {
+    public static boolean isLoginValid(SouthwestLogin sl, boolean notify) {
 
         AppComponent dap = CleanupApplication.getAppComponent();
         Context ctx = dap.context();
@@ -83,21 +85,28 @@ public class SouthwestValidityRequest implements Runnable {
             Log.d(SouthwestValidityRequest.class.getSimpleName(), response);
             if (response.contains(ConstantsConfig.SOUTHWEST_RESERVATION_ERROR)) {
 
-                ne.setTitle("Southwest Reservation Error");
-                ne.setMessage("The reservation with confirmation code: "
-                        + sl.getConfirmationCode() + " does not exist within the Southwest database");
-                eventBus.post(ne);
-                eventBus.post(ne.getToastEvent());
+                if (notify) {
+                    ne.setTitle("Southwest Reservation Error");
+                    ne.setMessage("The reservation with confirmation code: "
+                            + sl.getConfirmationCode() + " does not exist within the Southwest database");
+                    eventBus.post(ne);
+                    eventBus.post(ne.getToastEvent());
+                }
+
                 return false;
 
 
             } else if (response.contains(ConstantsConfig.SOUTHWEST_NAME_ERROR)) {
-                ne.setTitle("Southwest Naming Error");
-                ne.setMessage("The reservation with confirmation code: "
-                        + sl.getConfirmationCode() + " has an incorrect name associated with it. Please" +
-                        "make sure that all of your information has inputted correctly");
-                eventBus.post(ne);
-                eventBus.post(ne.getToastEvent());
+
+                if (notify) {
+                    ne.setTitle("Southwest Naming Error");
+                    ne.setMessage("The reservation with confirmation code: "
+                            + sl.getConfirmationCode() + " has an incorrect name associated with it. Please" +
+                            "make sure that all of your information has inputted correctly");
+                    eventBus.post(ne);
+                    eventBus.post(ne.getToastEvent());
+
+                }
 
                 return false;
             } else if (response.contains(ConstantsConfig.SOUTHWEST_TIMING_ERROR)) {
@@ -107,13 +116,16 @@ public class SouthwestValidityRequest implements Runnable {
 
         } catch (IOException e) {
             Crashlytics.logException(e);
-            ne.setTitle("Connection Issue");
-            ne.setMessage("There was an error in connecting to the internet to " +
-                    "verify the validity of the reservation with confirmation code " +
-                    sl.getConfirmationCode() + "\n Please check that you have internet access");
+            if (notify) {
+                ne.setTitle("Connection Issue");
+                ne.setMessage("There was an error in connecting to the internet to " +
+                        "verify the validity of the reservation with confirmation code " +
+                        sl.getConfirmationCode() + "\n Please check that you have internet access");
 
-            eventBus.post(ne);
-            eventBus.post(ne.getToastEvent());
+                eventBus.post(ne);
+                eventBus.post(ne.getToastEvent());
+            }
+
             return false;
 
 
@@ -122,16 +134,19 @@ public class SouthwestValidityRequest implements Runnable {
 
         Calendar cal = Calendar.getInstance();
         if (cal.getTimeInMillis() - sle.getFlightDate().getTime() > 24 * 60 * 60 * 1000) {
-            ne.setTitle("Unable to Validate Login Credentials");
-            ne.setMessage("For some reason, there was an error in verifying the " +
-                    "credentials for the login with confirmation code: " + sl.getConfirmationCode()
-                    + "\n This may be caused by a change in the Southwest Website, please notify" +
-                    " me at ______ so that I may update the application. Please make sure that" +
-                    " you don't forget to manually login at" + sle.getFlightDate().toString() +
-                    " if this error continues to persist");
+            if (notify) {
+                ne.setTitle("Unable to Validate Login Credentials");
+                ne.setMessage("For some reason, there was an error in verifying the " +
+                        "credentials for the login with confirmation code: " + sl.getConfirmationCode()
+                        + "\n This may be caused by a change in the Southwest Website, please notify" +
+                        " me at ______ so that I may update the application. Please make sure that" +
+                        " you don't forget to manually login at" + sle.getFlightDate().toString() +
+                        " if this error continues to persist");
 
-            eventBus.post(ne);
-            eventBus.post(ne.getToastEvent());
+                eventBus.post(ne);
+                eventBus.post(ne.getToastEvent());
+            }
+
             return false;
         }
         return true;
@@ -142,7 +157,7 @@ public class SouthwestValidityRequest implements Runnable {
     //static Runnable uiWorker;
     public void run() {
 
-        isLoginValid(sl);
+        isLoginValid(sl, this.notify);
 
     }
 

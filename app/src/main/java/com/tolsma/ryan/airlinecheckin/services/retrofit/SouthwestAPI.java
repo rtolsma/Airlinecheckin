@@ -12,7 +12,6 @@ import retrofit.http.POST;
  */
 public interface SouthwestAPI {
     @FormUrlEncoded
-
     @POST("/flight/retrieveCheckinDoc.html")
     Call<ResponseBody> sendLogin(@Field("confirmationNumber") String confirmationNumber,
                                  @Field("firstName") String firstName,
@@ -20,12 +19,15 @@ public interface SouthwestAPI {
                                  @Field("submitButton") String button);
 
     //TODO test on confirmation numbers with different numbers of passengers
+    @FormUrlEncoded
     @POST("/flight/selectPrintDocument.html")
     Call<ResponseBody> sendCheckinButton(
             @Field("checkinPassengers[0].selected") String selected, //Should be true or false, for checkin
             @Field("printDocuments") String checkin //Should always be "Check In"
     );
 
+
+    @FormUrlEncoded
     @POST("/flight/selectCheckinDocDelivery.html")
     Call<ResponseBody> sendEmailDelivery(
             @Field("selectedOption") String selectedOption,  //should be optionEmail
@@ -34,6 +36,7 @@ public interface SouthwestAPI {
 
     );
 
+    @FormUrlEncoded
     @POST("/flight/selectCheckinDocDelivery.html")
     Call<ResponseBody> sendTextMessageDelivery(
             @Field("selectedOption") String selectedOption, //should be optionText
