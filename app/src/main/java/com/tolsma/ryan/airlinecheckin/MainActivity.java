@@ -56,9 +56,12 @@ public class MainActivity extends AppCompatActivity implements ExtendedUI {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         //On startup, open with the login list showing
-        if (!(settingsFragment != null && settingsFragment.isVisible()))
-        showLoginList();
+        if (!(settingsFragment != null && settingsFragment.isVisible())) {
+            showLoginList();
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -99,13 +102,26 @@ public class MainActivity extends AppCompatActivity implements ExtendedUI {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        switch (id) {
+            case R.id.action_settings:
+                if (loginListFragment.isVisible()) {
+                    showSettingsFragment();
+                    item.setTitle("Logins");
+                } else if (settingsFragment.isVisible()) {
+                    showLoginList();
+                    item.setTitle("Settings");
+                }
+                break;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            showSettingsFragment();
-            return true;
+            case android.R.id.home:
+                if (settingsFragment.isVisible()) {
+                    fm.popBackStack();
+                }
+                break;
+            default:
+
         }
-
+        //noinspection SimplifiableIfStatement
         return super.onOptionsItemSelected(item);
     }
 
