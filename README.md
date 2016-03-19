@@ -1,9 +1,10 @@
 # Airlinecheckin
-This is a simple android app that I created to solve the problem of checking in to solve the problem of constanly having to manually check-in to Southwest Airlines for every single flight. This app has a simple user interface, where you are able to create requests to be automatically be sent out at a future date.
+This is a simple android app that I created to solve the problem of constanly having to manually check-in to Southwest Airlines for every single flight. This app has a simple user interface, where you are able to create requests to be automatically be sent out at a future date.
 
 I used this project to become familiar with common android libraries and development patterns including: 
 
-Very, very, very basic unit testing with ###Robolectric, Junit 4, and Mockito
+###Robolectric, Junit 4, and Mockito
+Very, very, very basic unit testing
 
 ### Dagger
 dependency injection design pattern
